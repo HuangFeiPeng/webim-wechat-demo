@@ -1,0 +1,31 @@
+<!--pages/contacts/index.wxml-->
+<view class="contacts_container">
+  <!-- nav-bar -->
+  <van-nav-bar>
+    <van-icon slot="left" size="50rpx" name="https://download-sdk.oss-cn-beijing.aliyuncs.com/downloads/IMDemo/avatar/Image2.png" />
+    <view slot="title">联系人
+      <van-loading wx:if="{{conversationLoading}}" color="#1989fa" size="25rpx" />
+    </view>
+  </van-nav-bar>
+  <!-- 搜索输入框 -->
+  <van-search value="{{ searchContactsValue }}" placeholder="请输入搜索关键词" show-action />
+  <!-- 联系人内容 -->
+  <view class="contacts_content">
+    <van-cell-group>
+      <van-cell is-link title="新请求" link-type="navigateTo" url="/pages/dashboard/index" />
+      <van-cell is-link title="群组" link-type="navigateTo" url="/pages/dashboard/index" />
+      <van-cell is-link title="黑名单" link-type="navigateTo" url="/pages/dashboard/index" />
+    </van-cell-group>
+
+    <scroll-view class="scroll-content" scroll-y="true" bindscrolltolower="onContactsScrolltolower">
+      <van-cell-group title="联系人"> 
+        <!-- <van-cell  wx:for="{{ mockContactsList }}" wx:key="*this" title="1" /> -->
+        <van-cell wx:for="{{ mockContactsList }}" wx:key="*this"  inset="true" clickable="true" title="柴玉婷" label="环信ID">
+        <van-icon slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="https://download-sdk.oss-cn-beijing.aliyuncs.com/downloads/IMDemo/avatar/Image2.png"  />
+      </van-cell>
+      </van-cell-group>
+    </scroll-view>
+  </view>
+  <!-- tabbar等高占位 -->
+  <view class="tabbar_placeholder_box" style="height: {{tabbarPlaceholderHeight}}px;"></view>
+</view>

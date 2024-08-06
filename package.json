@@ -1,0 +1,16 @@
+{
+  "name": "webim-webchat-demo",
+  "version": "1.0.0",
+  "description": "",
+  "main": ".eslintrc.js",
+  "scripts": {
+    "vant-t": "vant-tree-shaking",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@vant/weapp": "^1.11.6",
+    "vant-tree-shaking": "^1.0.4"
+  }
+}

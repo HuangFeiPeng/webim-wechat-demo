@@ -1,0 +1,32 @@
+<!--pages/conversation/index.wxml-->
+<!-- 会话列表正式UI页面 -->
+<view class="conversation_container">
+  <!-- nav-bar -->
+  <van-nav-bar>
+    <van-icon slot="left" size="50rpx" name="https://download-sdk.oss-cn-beijing.aliyuncs.com/downloads/IMDemo/avatar/Image2.png" />
+    <view slot="title">会话
+      <van-loading wx:if="{{conversationLoading}}" color="#1989fa" size="25rpx" />
+    </view>
+  </van-nav-bar>
+  <!-- 会话列表加载骨架屏 -->
+  <view class="converstation_skeleton_container" wx:if="loading" wx:for="{{20}}" wx:key="index">
+    <van-skeleton title avatar row="1" loading="{{ loading }}" />
+  </view>
+  <!-- 搜索输入框 -->
+  <van-search value="{{ searchConversationValue }}" placeholder="请输入搜索关键词" show-action />
+  <!-- 会话列表滚动 -->
+  <scroll-view class="scroll-content" scroll-y="true" bindscrolltolower="onConversationScrolltolower">
+    <van-cell wx:for="{{ mockConversationList }}" wx:key="*this"  inset="true" clickable="true" bind:longpress="onCallOpenConversationHandlerActionSheet" bind:tap="onEntryChatPage">
+        <van-icon slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="https://download-sdk.oss-cn-beijing.aliyuncs.com/downloads/IMDemo/avatar/Image2.png" info="99+" />
+        <view slot="title">
+          <view class="van-cell-text">三阳开泰</view>
+          <view>Hi！在吗？</view>
+        </view>
+        <view slot="right-icon">
+          周三
+        </view>
+      </van-cell>
+  </scroll-view>
+  <view class="tabbar_placeholder_box" style="height: {{tabbarPlaceholderHeight}}px;"></view>
+</view>
+<van-action-sheet z-index="{{9999999}}" root-portal="{{ true }}" show="{{ showConversationHandlerActionSheet }}" actions="{{ actions }}" bind:close="onCloseConversationHandlerActionSheet" bind:select="onSelectConversationHandlerOptions" bind:cancel="onCloseConversationHandlerActionSheet" cancel-text="取消" />

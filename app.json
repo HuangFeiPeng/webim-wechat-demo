@@ -1,0 +1,35 @@
+{
+  "pages": [
+    "pages/login/index",
+    "pages/conversation/index",
+    "pages/contacts/index",
+    "pages/mine/index",
+    "pages/chat/index"
+
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "EaseIM",
+    "navigationBarBackgroundColor": "#ffffff"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#000000",
+    "selectedColor": "#3cc51f",
+    "backgroundColor": "#ffffff",
+    "list": [
+      {
+        "pagePath": "pages/conversation/index"
+      },
+      {
+        "pagePath": "pages/contacts/index"
+      },
+      {
+        "pagePath": "pages/mine/index"
+      }
+    ]
+  },
+  "componentFramework": "glass-easel",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

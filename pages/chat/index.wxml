@@ -1,0 +1,6 @@
+<!--pages/chat/index.wxml-->
+<view class="chat_container">
+  <chat-navbar></chat-navbar>
+  <chat-message-container class="chat_message_container"  catchtap="onMessagePageTap"/>
+  <chat-inputbar id="chatInputbarComp"/>
+</view>

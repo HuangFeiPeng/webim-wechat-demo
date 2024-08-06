@@ -1,0 +1,3 @@
+<van-popup show="{{ show }}" bind:close="onClose" custom-style="height: 30%;" position="bottom">
+<text style="width: 100%;height: 100rpx; text-align: center;">留作录音实现</text>
+</van-popup>
