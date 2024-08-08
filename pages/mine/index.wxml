@@ -8,10 +8,10 @@
   </van-nav-bar>
   <view class="mine_content">
     <view class="mine_content_header">
-      <van-image width="300rpx" height="300rpx" src="https://img.yzcdn.cn/vant/cat.jpeg" radius="20rpx" />
-      <text>法外狂徒张三</text>
+      <van-image width="300rpx" height="300rpx" src="{{ loginUserInfosData.avatarurl || '/static/avatar/defaultAvatarSingle.png' }}" radius="20rpx" />
+      <text>{{ loginUserInfosData.nickname || '暂未设置昵称' }}</text>
       <view class="mine_content_id_box">
-        <text class="mine_content_id_text">ID：hfp</text>
+        <text class="mine_content_id_text">ID：{{ loginEMUserId }}</text>
         <image class="mine_content_copy_icon" src="/static/mine/copy_icon.png"></image>
       </view>
     </view>

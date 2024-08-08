@@ -8,6 +8,7 @@ import {
 import formaterDate from '../utils/formaterDate'
 import emUserInfos from '../EaseIM/emApis/emUserInfos'
 import emGroups from '../EaseIM/emApis/emGroups'
+import { EMClient} from '../EaseIM/index'
 const {
   fetchOtherInfoFromServer,
 } = emUserInfos()
@@ -22,7 +23,9 @@ export const store = observable({
   contactsList: [], //联系人列表
   contactsUserInfos: new Map(),
   groupInfos: new Map(), // 添加一个 Map 用于存储群组信息
-
+  /* 我的相关 */
+  loginEMUserId:EMClient.user,
+  loginUserInfos:{},//登录用户属性
   /* actions methods */
   /* 会话列表相关 */
   //获取会话列表数据
@@ -158,6 +161,12 @@ export const store = observable({
       })
     }
   }),
+
+  /* 我的相关 */
+  getLoginUserInfos:action(function(userInfos){
+    console.log('userInfos',userInfos,);
+    this.loginUserInfos = { ...userInfos[this.loginEMUserId] }
+  }),
   /* 计算属性 */
   // 计算未读消息总数的计算属性
   get totalUnreadCount() {
@@ -172,5 +181,9 @@ export const store = observable({
       }
       return contact;
     });
+  },
+  //计算获取登录用户的用户属性
+  get loginUserInfosData(){
+    return this.loginUserInfos
   }
 });
