@@ -9,7 +9,7 @@ import formaterDate from '../utils/formaterDate'
 import emUserInfos from '../EaseIM/emApis/emUserInfos'
 import emGroups from '../EaseIM/emApis/emGroups'
 const {
-  fetchOtherInfoFromServer
+  fetchOtherInfoFromServer,
 } = emUserInfos()
 const {
   getGroupInfosFromServer
@@ -24,6 +24,7 @@ export const store = observable({
   groupInfos: new Map(), // 添加一个 Map 用于存储群组信息
 
   /* actions methods */
+  /* 会话列表相关 */
   //获取会话列表数据
   initConversationListFromServer: action(function (data) {
     if (data?.conversations?.length) {
@@ -65,9 +66,7 @@ export const store = observable({
             }
             // 合并 groupChat 群组属性到对应的会话
             if (conversation.conversationType === 'groupChat') {
-              console.log('groupInfos', groupInfos);
               const groupInfo = groupInfos.find(group => group.id === conversation.conversationId);
-              console.log('groupInfo', groupInfo);
               if (groupInfo) {
                 set(conversation, groupInfo);
                 // 更新 groupInfos
@@ -114,6 +113,26 @@ export const store = observable({
       });
     }
   }),
+  // 删除会话列表中的指定会话
+  removeConversation: action(function (conversationId) {
+    const index = this.conversationList.findIndex(conversation => conversation.conversationId === conversationId);
+    if (index !== -1) {
+      // 删除指定的会话并引起响应式更新
+      runInAction(() => {
+        // 删除指定的会话并引起响应式更新
+        this.conversationList.splice(index, 1);
+        // 重新赋值数组以确保 MobX 能够检测到变化
+        this.conversationList = [...this.conversationList];
+        console.log('>>>>>mobx执行删除', this.conversationList);
+      });
+
+    }
+  }),
+  /* 联系人相关 */
+  //获取全部联系人
+  initContactsListFromServer:action(function(data){
+    this.contactsList = [...data]
+  }),
   //获取用户属性
   geContactsUserInfos: action(function (userIds) {
     if (userIds.length) {
@@ -126,6 +145,7 @@ export const store = observable({
       })
     }
   }),
+  /* 群组相关 */
   // 获取群组详情
   geGroupInfos: action(function (groupIds) {
     if (groupIds.length) {
@@ -138,8 +158,19 @@ export const store = observable({
       })
     }
   }),
+  /* 计算属性 */
   // 计算未读消息总数的计算属性
   get totalUnreadCount() {
     return this.conversationList.reduce((sum, conversation) => sum + (conversation.unReadCount || 0), 0);
+  },
+  // 计算联系人列表中包含用户属性的联系人
+  get enrichedContactsList() {
+    return this.contactsList.map(contact => {
+      const userInfo = this.contactsUserInfos.get(contact.userId);
+      if (userInfo) {
+        return { ...contact, ...userInfo };
+      }
+      return contact;
+    });
   }
 });

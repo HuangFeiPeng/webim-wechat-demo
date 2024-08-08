@@ -7,7 +7,8 @@ import {
 } from '../../store/index';
 import emConversation from '../../EaseIM/emApis/emConversation'
 const {
-  fetchConversationFromServer
+  fetchConversationFromServer,
+  removeConversationFromServer
 } = emConversation()
 const app = getApp();
 Page({
@@ -18,16 +19,20 @@ Page({
     loading: false, //骨架屏加载
     conversationLoading: false,
     searchConversationValue: '',
-    mockConversationList: new Array(100).fill(1).map((_, i) => `user${i + 1}`),
     tabbarPlaceholderHeight: app.globalData.tabbarHeight,
     showConversationHandlerActionSheet: false,
+    chooseConversation: {
+      conversationId: '',
+      conversationType: '',
+    },
     actions: [{
         name: '删除',
         color: '#ee0a24',
+        type: 'DELETE'
       },
-      {
-        name: '置顶',
-      },
+      // {
+      //   name: '置顶',
+      // },
     ],
   },
 
@@ -38,9 +43,8 @@ Page({
     this.store = createStoreBindings(this, {
       store,
       fields: ['conversationList'],
-      actions: ['initConversationListFromServer'],
+      actions: ['initConversationListFromServer','removeConversation'],
     });
-
     setTimeout(() => {
       if (!this.data.conversationLoading?.length) {
         console.log('initConversationListFromServer');
@@ -51,9 +55,6 @@ Page({
         this.fetchConversationDataFromServer()
       }
     }, 500)
-
-
-
   },
   async fetchConversationDataFromServer() {
     try {
@@ -62,7 +63,7 @@ Page({
         ...res
       })
     } catch (error) {
-      console.log('error',error);
+      console.log('error', error);
       wx.showToast({
         title: '会话列表获取失败',
       })
@@ -76,8 +77,15 @@ Page({
   onConversationScrolltolower() {
     console.log('>>>>>>会话列表滚动置底');
   },
-  onCallOpenConversationHandlerActionSheet() {
+  onCallOpenConversationHandlerActionSheet(event) {
+    console.log('event', event);
+    const conversationId = event.currentTarget.dataset.conversationid;
+    const conversationType = event.currentTarget.dataset.conversationtype;
     this.setData({
+      chooseConversation: {
+        conversationId,
+        conversationType
+      },
       showConversationHandlerActionSheet: true,
     });
   },
@@ -88,6 +96,28 @@ Page({
   },
   onSelectConversationHandlerOptions(event) {
     console.log(event.detail);
+    const {
+      type
+    } = event.detail
+    if (type === 'DELETE') {
+      this.callDeleteConversationItem()
+    }
+  },
+  async callDeleteConversationItem() {
+    console.log('>>>>删除会话列表', this.data.chooseConversation);
+    const { conversationId,conversationType } = this.data.chooseConversation
+    if(!conversationId || !conversationType) return;
+    try {
+      await removeConversationFromServer(conversationId,conversationType)
+      this.removeConversation(conversationId)
+      wx.showToast({
+        title: '会话已删除',
+      })
+    } catch (error) {
+        wx.showToast({
+          title: '会话删除失败',
+        })
+    }
   },
   onEntryChatPage() {
     wx.navigateTo({

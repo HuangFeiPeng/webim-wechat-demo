@@ -18,11 +18,11 @@
     </van-cell-group>
 
     <scroll-view class="scroll-content" scroll-y="true" bindscrolltolower="onContactsScrolltolower">
-      <van-cell-group title="联系人"> 
+      <van-cell-group title="联系人">
         <!-- <van-cell  wx:for="{{ mockContactsList }}" wx:key="*this" title="1" /> -->
-        <van-cell wx:for="{{ mockContactsList }}" wx:key="*this"  inset="true" clickable="true" title="柴玉婷" label="环信ID">
-        <van-icon slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="https://download-sdk.oss-cn-beijing.aliyuncs.com/downloads/IMDemo/avatar/Image2.png"  />
-      </van-cell>
+        <van-cell wx:for="{{ enrichedContactsList }}" wx:key="userId" wx:for-item="contactsItem" inset="true" clickable="true" title="{{contactsItem.nickname ||contactsItem.remark || contactsItem.userId}}" label="{{ contactsItem.userId }}">
+          <van-icon slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="{{ contactsItem.avatarurl || '/static/avatar/defaultAvatarSingle.png' }}" />
+        </van-cell>
       </van-cell-group>
     </scroll-view>
   </view>
