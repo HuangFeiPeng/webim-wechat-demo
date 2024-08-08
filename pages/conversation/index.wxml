@@ -12,10 +12,10 @@
     <van-skeleton title avatar row="1" loading="{{ loading }}" />
   </view>
   <!-- 搜索输入框 -->
-  <van-search value="{{ searchConversationValue }}" placeholder="请输入搜索关键词" show-action />
+  <van-search model:value="{{ searchConversationValue }}" placeholder="请输入搜索关键词" input-align="center" bind:focus="onSearchFocus" bind:cancel="onSearchCancel" bind:change="onActionSearchInputValue" />
   <!-- 会话列表滚动 -->
   <scroll-view class="scroll-content" scroll-y="true" bindscrolltolower="onConversationScrolltolower">
-    <van-cell wx:for="{{ conversationList }}" wx:for-item="conversationItem" wx:key="conversationId" inset="true" clickable="true" bind:longpress="onCallOpenConversationHandlerActionSheet" data-conversationid="{{conversationItem.conversationId}}" data-conversationtype="{{conversationItem.conversationType}}" bind:tap="onEntryChatPage">
+    <van-cell wx:for="{{  searchStatus? searchSourceData: conversationList}}" wx:for-item="conversationItem" wx:key="conversationId" inset="true" clickable="true" bind:longpress="onCallOpenConversationHandlerActionSheet" data-conversationid="{{conversationItem.conversationId}}" data-conversationtype="{{conversationItem.conversationType}}" bind:tap="onEntryChatPage">
       <van-icon wx:if="{{ conversationItem.conversationType==='singleChat' }}" slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="{{ conversationItem.avatarurl?conversationItem.avatarurl: '/static/avatar/defaultAvatarSingle.png' }}" info="{{ conversationItem.unReadCount?conversationItem.unReadCount : '' }}" />
       <van-icon wx:if="{{ conversationItem.conversationType==='groupChat' }}" slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="/static/avatar/defaultAvatarGroup.png" info="{{ conversationItem.unReadCount?conversationItem.unReadCount : '' }}" />
       <view slot="title">

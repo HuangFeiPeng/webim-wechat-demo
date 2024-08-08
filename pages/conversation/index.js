@@ -19,6 +19,8 @@ Page({
     loading: false, //骨架屏加载
     conversationLoading: false,
     searchConversationValue: '',
+    searchStatus: false,
+    searchSourceData: [],
     tabbarPlaceholderHeight: app.globalData.tabbarHeight,
     showConversationHandlerActionSheet: false,
     chooseConversation: {
@@ -43,7 +45,7 @@ Page({
     this.store = createStoreBindings(this, {
       store,
       fields: ['conversationList'],
-      actions: ['initConversationListFromServer','removeConversation'],
+      actions: ['initConversationListFromServer', 'removeConversation'],
     });
     setTimeout(() => {
       if (!this.data.conversationLoading?.length) {
@@ -105,19 +107,63 @@ Page({
   },
   async callDeleteConversationItem() {
     console.log('>>>>删除会话列表', this.data.chooseConversation);
-    const { conversationId,conversationType } = this.data.chooseConversation
-    if(!conversationId || !conversationType) return;
+    const {
+      conversationId,
+      conversationType
+    } = this.data.chooseConversation
+    if (!conversationId || !conversationType) return;
     try {
-      await removeConversationFromServer(conversationId,conversationType)
+      await removeConversationFromServer(conversationId, conversationType)
       this.removeConversation(conversationId)
       wx.showToast({
         title: '会话已删除',
       })
     } catch (error) {
-        wx.showToast({
-          title: '会话删除失败',
-        })
+      wx.showToast({
+        title: '会话删除失败',
+      })
     }
+  },
+  /* Search */
+  onSearchFocus() {
+    console.log('>>>>>搜索框聚焦');
+    this.setData({
+      searchStatus: true
+    })
+    this.setData({
+      searchSourceData: this.data.conversationList
+    })
+  },
+  onSearchBlur() {
+    this.setData({
+      searchStatus: false
+    })
+  },
+  onSearchCancel(){
+    this.setData({
+      searchStatus: false
+    })
+  },
+  onActionSearchInputValue() {
+    const searchResult = this.data.conversationList.filter(conversation => {
+      const {
+        conversationType,
+        conversationId,
+        lastMessage
+      } = conversation;
+      const searchValue = this.data.searchConversationValue;
+      const matchesId = conversationId?.includes(searchValue);
+      const matchesMessage = lastMessage?.msg?.includes(searchValue);
+      if (conversationType === 'singleChat') {
+        return matchesId || conversation?.nickname?.includes(searchValue) || matchesMessage;
+      } else if (conversationType === 'groupChat') {
+        return matchesId || conversation?.name?.includes(searchValue) || matchesMessage;
+      }
+      return false; // 如果 conversationType 不是 singleChat 或 groupChat，则不匹配
+    });
+    this.setData({
+      searchSourceData:searchResult
+    })
   },
   onEntryChatPage() {
     wx.navigateTo({

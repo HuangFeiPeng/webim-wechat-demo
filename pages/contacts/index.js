@@ -16,6 +16,8 @@ Page({
    */
   data: {
     searchContactsValue: "",
+    searchStatus: false,
+    searchSourceData: [],
     tabbarPlaceholderHeight: app.globalData.tabbarHeight
   },
 
@@ -25,7 +27,7 @@ Page({
   onLoad(options) {
     this.store = createStoreBindings(this, {
       store,
-      fields: ['contactsList','contactsUserInfos','enrichedContactsList'],
+      fields: ['contactsList', 'contactsUserInfos', 'enrichedContactsList'],
       actions: ['initContactsListFromServer'],
     });
     setTimeout(() => {
@@ -42,6 +44,46 @@ Page({
     } catch (error) {
       console.log('>>>>联系人请求成功', error);
     }
+  },
+  /* Search */
+  onSearchFocus() {
+    console.log('>>>>>搜索框聚焦');
+    this.setData({
+      searchStatus: true
+    })
+    this.setData({
+      searchSourceData: this.data.enrichedContactsList
+    })
+  },
+  onSearchBlur() {
+    this.setData({
+      searchStatus: false
+    })
+  },
+  onSearchCancel() {
+    this.setData({
+      searchStatus: false
+    })
+  },
+  onActionSearchInputValue() {
+    const searchResult = this.data.enrichedContactsList.filter(contacts => {
+      const {
+        userId,
+        remark
+      } = contacts;
+      const searchValue = this.data.searchContactsValue;
+      const matchesId = userId?.includes(searchValue);
+      const matchesRemark = remark?.includes(searchValue);
+      if (matchesId || contacts?.nickname?.includes(searchValue) || matchesRemark) {
+        return true
+      } else {
+        return false
+      }
+
+    });
+    this.setData({
+      searchSourceData: searchResult
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

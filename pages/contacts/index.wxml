@@ -8,7 +8,7 @@
     </view>
   </van-nav-bar>
   <!-- 搜索输入框 -->
-  <van-search value="{{ searchContactsValue }}" placeholder="请输入搜索关键词" show-action />
+  <van-search model:value="{{ searchContactsValue }}" placeholder="请输入搜索关键词" input-align="center" bind:focus="onSearchFocus" bind:cancel="onSearchCancel" bind:change="onActionSearchInputValue" />
   <!-- 联系人内容 -->
   <view class="contacts_content">
     <van-cell-group>
@@ -19,8 +19,7 @@
 
     <scroll-view class="scroll-content" scroll-y="true" bindscrolltolower="onContactsScrolltolower">
       <van-cell-group title="联系人">
-        <!-- <van-cell  wx:for="{{ mockContactsList }}" wx:key="*this" title="1" /> -->
-        <van-cell wx:for="{{ enrichedContactsList }}" wx:key="userId" wx:for-item="contactsItem" inset="true" clickable="true" title="{{contactsItem.nickname ||contactsItem.remark || contactsItem.userId}}" label="{{ contactsItem.userId }}">
+        <van-cell wx:for="{{ searchStatus? searchSourceData: enrichedContactsList }}" wx:key="userId" wx:for-item="contactsItem" inset="true" clickable="true" title="{{contactsItem.nickname ||contactsItem.remark || contactsItem.userId}}" label="{{ contactsItem.userId }}">
           <van-icon slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="{{ contactsItem.avatarurl || '/static/avatar/defaultAvatarSingle.png' }}" />
         </van-cell>
       </van-cell-group>
