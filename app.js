@@ -1,3 +1,4 @@
+import { EMClient } from "./EaseIM/index"
 App({
   globalData: {
     globalActiveTab: 0,

@@ -1,16 +1,20 @@
 // pages/login/index.js
+import emConnect from '../../EaseIM/emApis/emConnect.js'
+const {
+  loginWithPassword
+} = emConnect()
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    loginPhoneNumber:"",
-    loginSms:"",
-    loginLoadingStatus:false,
-    loginBtnDisabledStatus:false,
+    loginPhoneNumber: "",
+    loginSms: "",
+    loginLoadingStatus: false,
+    loginBtnDisabledStatus: false,
     privacyChecked: false,
-    smsButtonText:"发送验证码"
+    smsButtonText: "发送验证码"
   },
   onPrivacyChecked() {
     this.setData({
@@ -18,11 +22,18 @@ Page({
     })
     console.log(this.data.privacyChecked)
   },
-  onEntryConversationPage(){
-    console.log('111111')
-    wx.switchTab({
-      url: '../conversation/index',
-    })
+  async onEntryConversationPage() {
+    try {
+      await loginWithPassword('hfp', '1')
+      wx.switchTab({
+        url: '../conversation/index',
+      })
+    } catch (error) {
+      wx.showToast({
+        title: 'IM Open Fail',
+      })
+    }
+
   },
   /**
    * 生命周期函数--监听页面加载

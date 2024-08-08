@@ -1,6 +1,14 @@
 // pages/conversation/index.js
-import { createStoreBindings } from 'mobx-miniprogram-bindings';
-import { conversationStore } from '../../stores/conversation';
+import {
+  createStoreBindings
+} from 'mobx-miniprogram-bindings';
+import {
+  store
+} from '../../store/index';
+import emConversation from '../../EaseIM/emApis/emConversation'
+const {
+  fetchConversationFromServer
+} = emConversation()
 const app = getApp();
 Page({
   /**
@@ -13,8 +21,7 @@ Page({
     mockConversationList: new Array(100).fill(1).map((_, i) => `user${i + 1}`),
     tabbarPlaceholderHeight: app.globalData.tabbarHeight,
     showConversationHandlerActionSheet: false,
-    actions: [
-      {
+    actions: [{
         name: '删除',
         color: '#ee0a24',
       },
@@ -28,31 +35,43 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-    this.chatStore = createStoreBindings(this, {
-      store: conversationStore,
-      fields: ['chatList', 'totalPrice'],
-      actions: ['initChat'],
+    this.store = createStoreBindings(this, {
+      store,
+      fields: ['conversationList'],
+      actions: ['initConversationListFromServer'],
     });
-    let chat = [
-      {
-        name: 'XXXX',
-        price: '111',
-      },
-      {
-        name: 'XXXX',
-        price: '111',
-      },
-    ];
-    this.initChat(chat);
-    this.setData({
-      conversationLoading: true,
-    });
+
     setTimeout(() => {
+      if (!this.data.conversationLoading?.length) {
+        console.log('initConversationListFromServer');
+        this.setData({
+          conversationLoading: true,
+          loading: true
+        });
+        this.fetchConversationDataFromServer()
+      }
+    }, 500)
+
+
+
+  },
+  async fetchConversationDataFromServer() {
+    try {
+      const res = await fetchConversationFromServer()
+      this.initConversationListFromServer({
+        ...res
+      })
+    } catch (error) {
+      console.log('error',error);
+      wx.showToast({
+        title: '会话列表获取失败',
+      })
+    } finally {
       this.setData({
         conversationLoading: false,
-      });
-    }, 2000);
-    console.log(this.chatStore);
+        loading: false
+      })
+    }
   },
   onConversationScrolltolower() {
     console.log('>>>>>>会话列表滚动置底');
@@ -96,18 +115,6 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-    this.chatStore.destroyStoreBindings();
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-    console.log('>>>>>>滚动到底部');
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {},
+    this.store.destroyStoreBindings();
+  }
 });

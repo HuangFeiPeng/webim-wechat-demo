@@ -1,4 +1,3 @@
-<!--pages/conversation/index.wxml-->
 <!-- 会话列表正式UI页面 -->
 <view class="conversation_container">
   <!-- nav-bar -->
@@ -16,16 +15,23 @@
   <van-search value="{{ searchConversationValue }}" placeholder="请输入搜索关键词" show-action />
   <!-- 会话列表滚动 -->
   <scroll-view class="scroll-content" scroll-y="true" bindscrolltolower="onConversationScrolltolower">
-    <van-cell wx:for="{{ mockConversationList }}" wx:key="*this"  inset="true" clickable="true" bind:longpress="onCallOpenConversationHandlerActionSheet" bind:tap="onEntryChatPage">
-        <van-icon slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="https://download-sdk.oss-cn-beijing.aliyuncs.com/downloads/IMDemo/avatar/Image2.png" info="99+" />
-        <view slot="title">
-          <view class="van-cell-text">三阳开泰</view>
-          <view>Hi！在吗？</view>
-        </view>
-        <view slot="right-icon">
-          周三
-        </view>
-      </van-cell>
+    <van-cell wx:for="{{ conversationList }}" wx:key="*this" wx:for-item="conversationItem" wx:key-index="{{conversationItem.conversationId}}" inset="true" clickable="true" bind:longpress="onCallOpenConversationHandlerActionSheet" bind:tap="onEntryChatPage">
+      <van-icon wx:if="{{ conversationItem.conversationType==='singleChat' }}" slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="{{ conversationItem.avatarurl?conversationItem.avatarurl: '/static/avatar/defaultAvatarSingle.png' }}" info="{{ conversationItem.unReadCount?conversationItem.unReadCount : '' }}" />
+      <van-icon wx:if="{{ conversationItem.conversationType==='groupChat' }}" slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="/static/avatar/defaultAvatarGroup.png" info="{{ conversationItem.unReadCount?conversationItem.unReadCount : '' }}" />
+      <view slot="title">
+        <view wx:if="{{ conversationItem.conversationType === 'singleChat' }}" class="van-cell-text">{{ conversationItem.nickname || conversationItem.conversationId}}</view>
+        <view wx:if="{{ conversationItem.conversationType === 'groupChat' }}" class="van-cell-text">{{ conversationItem.name || conversationItem.conversationId}}</view>
+        <view wx:if="{{ conversationItem.lastMessage.type==='txt' }}">{{ conversationItem.lastMessage.msg }}</view>
+        <view wx:if="{{ conversationItem.lastMessage.type==='img' }}">[图片]</view>
+        <view wx:if="{{ conversationItem.lastMessage.type==='video' }}">[视频]</view>
+        <view wx:if="{{ conversationItem.lastMessage.type==='video' }}">[视频]</view>
+        <view wx:if="{{ conversationItem.lastMessage.type==='audio' }}">[语音]</view>
+        <view wx:if="{{ conversationItem.lastMessage.type==='loc' }}">[位置]</view>
+      </view>
+      <view slot="right-icon">
+        {{ conversationItem.lastMessage.time }}
+      </view>
+    </van-cell>
   </scroll-view>
   <view class="tabbar_placeholder_box" style="height: {{tabbarPlaceholderHeight}}px;"></view>
 </view>
