@@ -16,7 +16,7 @@ Page({
    * 页面的初始数据
    */
   data: {
-    loading: false, //骨架屏加载
+    loading: true, //骨架屏加载
     conversationLoading: false,
     searchConversationValue: '',
     searchStatus: false,
@@ -51,8 +51,7 @@ Page({
       if (!this.data.conversationLoading?.length) {
         console.log('initConversationListFromServer');
         this.setData({
-          conversationLoading: true,
-          loading: true
+          conversationLoading: true
         });
         this.fetchConversationDataFromServer()
       }
