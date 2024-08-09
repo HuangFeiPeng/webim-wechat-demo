@@ -4,8 +4,10 @@
     "pages/conversation/index",
     "pages/contacts/index",
     "pages/mine/index",
-    "pages/chat/index"
-
+    "pages/chat/index",
+    "pages/addContacts/index",
+    "pages/groupList/index",
+    "pages/blackList/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

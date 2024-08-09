@@ -1,0 +1,7 @@
+<!--pages/addContacts/index.wxml-->
+<van-nav-bar
+  title="添加朋友"
+  left-text="返回"
+  left-arrow
+  bind:click-left="onClickLeft"
+/>
