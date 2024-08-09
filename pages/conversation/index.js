@@ -127,9 +127,7 @@ Page({
   onSearchFocus() {
     console.log('>>>>>搜索框聚焦');
     this.setData({
-      searchStatus: true
-    })
-    this.setData({
+      searchStatus: true,
       searchSourceData: this.data.conversationList
     })
   },

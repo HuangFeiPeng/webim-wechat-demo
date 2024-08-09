@@ -8,7 +8,7 @@
     </view>
   </van-nav-bar>
   <!-- 会话列表加载骨架屏 -->
-  <view class="converstation_skeleton_container" wx:if="loading" wx:for="{{20}}" wx:key="index">
+  <view  wx:if="loading" wx:for="{{20}}" wx:key="index">
     <van-skeleton title avatar row="1" loading="{{ loading }}" />
   </view>
   <!-- 搜索输入框 -->
