@@ -8,7 +8,9 @@ import {
 import formaterDate from '../utils/formaterDate'
 import emUserInfos from '../EaseIM/emApis/emUserInfos'
 import emGroups from '../EaseIM/emApis/emGroups'
-import { EMClient} from '../EaseIM/index'
+import {
+  EMClient
+} from '../EaseIM/index'
 const {
   fetchOtherInfoFromServer,
 } = emUserInfos()
@@ -23,9 +25,12 @@ export const store = observable({
   contactsList: [], //联系人列表
   contactsUserInfos: new Map(),
   groupInfos: new Map(), // 添加一个 Map 用于存储群组信息
+  /* 黑名单 */
+  blackList: [], //黑名单列表
   /* 我的相关 */
-  loginEMUserId:EMClient.user,
-  loginUserInfos:{},//登录用户属性
+  loginEMUserId: EMClient.user,
+  loginUserInfos: {}, //登录用户属性
+
   /* actions methods */
   /* 会话列表相关 */
   //获取会话列表数据
@@ -133,7 +138,7 @@ export const store = observable({
   }),
   /* 联系人相关 */
   //获取全部联系人
-  initContactsListFromServer:action(function(data){
+  initContactsListFromServer: action(function (data) {
     this.contactsList = [...data]
   }),
   //获取用户属性
@@ -147,6 +152,11 @@ export const store = observable({
           reject(error))
       })
     }
+  }),
+  /* 黑名单 */
+  initBlackListFromServer:action(function(data){
+     this.blackList = [...data]
+     console.log('>>>>>初始化黑名单',this.blackList);
   }),
   /* 群组相关 */
   // 获取群组详情
@@ -163,9 +173,11 @@ export const store = observable({
   }),
 
   /* 我的相关 */
-  getLoginUserInfos:action(function(userInfos){
-    console.log('userInfos',userInfos,);
-    this.loginUserInfos = { ...userInfos[this.loginEMUserId] }
+  getLoginUserInfos: action(function (userInfos) {
+    console.log('userInfos', userInfos, );
+    this.loginUserInfos = {
+      ...userInfos[this.loginEMUserId]
+    }
   }),
   /* 计算属性 */
   // 计算未读消息总数的计算属性
@@ -177,13 +189,29 @@ export const store = observable({
     return this.contactsList.map(contact => {
       const userInfo = this.contactsUserInfos.get(contact.userId);
       if (userInfo) {
-        return { ...contact, ...userInfo };
+        return {
+          ...contact,
+          ...userInfo
+        };
       }
       return contact;
     });
   },
   //计算获取登录用户的用户属性
-  get loginUserInfosData(){
+  get loginUserInfosData() {
     return this.loginUserInfos
+  },
+  //计算属性获取黑名单列表的用户
+  get enrichedBlackList(){
+    return this.blackList.map(user=>{
+      const userInfo = this.contactsUserInfos.get(user);
+      if (userInfo) {
+        return {
+          userId:user,
+          ...userInfo
+        };
+      }
+      return {userId:user};
+    })
   }
 });

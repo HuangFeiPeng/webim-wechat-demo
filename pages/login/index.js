@@ -29,8 +29,9 @@ Page({
         url: '../conversation/index',
       })
     } catch (error) {
+      console.log('error',error);
       wx.showToast({
-        title: 'IM Open Fail',
+        title: 'IM Open Fail'
       })
     }
 

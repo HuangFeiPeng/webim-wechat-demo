@@ -1,20 +1,45 @@
 // pages/blackList/index.js
+import {
+  createStoreBindings
+} from 'mobx-miniprogram-bindings';
+import {
+  store
+} from '../../store/index';
+import emContacts from '../../EaseIM/emApis/emContacts'
+const { getBlocklistFromServer } = emContacts()
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-
+    
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad(options) {
-
+    this.store = createStoreBindings(this, {
+      store,
+      fields: ['enrichedBlackList'],
+      actions: ['initBlackListFromServer'],
+    });
+    this.fetchAllBlockListData()
   },
-
+  onClickLeft(){
+    wx.navigateBack()
+  },
+  async fetchAllBlockListData(){
+    try {
+      const res =  await getBlocklistFromServer()
+      this.initBlackListFromServer(res)
+    } catch (error) {
+        wx.showToast({
+          title: '黑名单拉取失败',
+        })
+    }
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
