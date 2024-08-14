@@ -3,6 +3,7 @@ import {
   action,
   runInAction,
   set,
+  toJS,
   computed
 } from 'mobx-miniprogram';
 import formaterDate from '../utils/formaterDate'
@@ -139,7 +140,38 @@ export const store = observable({
   /* 联系人相关 */
   //获取全部联系人
   initContactsListFromServer: action(function (data) {
+    console.log('initContactsListFromServer', data);
     this.contactsList = [...data]
+  }),
+  //删除本地store中的ContactList
+  deleteContactsListFromStore: action(function (userId) {
+    const index = this.contactsList.findIndex(contact => contact.userId === userId);
+    if(index !== -1){
+      runInAction(()=>{
+        this.contactsList.splice(index, 1);
+        // 重新赋值数组以确保 MobX 能够检测到变化
+        this.contactsList = [...this.contactsList];
+      })
+    }
+  }),
+  //修改用户备注
+  updateContactsRemark: action(function (data) {
+    const {
+      userId,
+      remark
+    } = data;
+    const contactIndex = this.contactsList.findIndex(contact => contact.userId === userId);
+    if (contactIndex !== -1) {
+      runInAction(() => {
+        const updatedContact = {
+          ...this.contactsList[contactIndex],
+          remark: remark,
+        };
+        // 更新整个对象
+        this.contactsList[contactIndex] = updatedContact;
+      });
+    }
+    console.log('this.contactsList', this.contactsList);
   }),
   //获取用户属性
   geContactsUserInfos: action(function (userIds) {
@@ -154,9 +186,9 @@ export const store = observable({
     }
   }),
   /* 黑名单 */
-  initBlackListFromServer:action(function(data){
-     this.blackList = [...data]
-     console.log('>>>>>初始化黑名单',this.blackList);
+  initBlackListFromServer: action(function (data) {
+    this.blackList = [...data]
+    console.log('>>>>>初始化黑名单', this.blackList);
   }),
   /* 群组相关 */
   // 获取群组详情
@@ -171,7 +203,6 @@ export const store = observable({
       })
     }
   }),
-
   /* 我的相关 */
   getLoginUserInfos: action(function (userInfos) {
     console.log('userInfos', userInfos, );
@@ -188,13 +219,19 @@ export const store = observable({
   get enrichedContactsList() {
     return this.contactsList.map(contact => {
       const userInfo = this.contactsUserInfos.get(contact.userId);
+      /**
+       * 在返回对象时，使用 MobX 的 toJS 方法来避免循环引用或深度观察。toJS 会将 observable 对象转换为普，
+       * JavaScript 对象。
+       * 在 MobX 的计算属性中，如果返回的对象是 observable 的，并且其依赖项没有发生明显变化，MobX 可能不会触发更新。使用 toJS 会创建并返回一个全新的普通对象，MobX 会认为这是一个新对象，从而触发视图更新。
+       */
       if (userInfo) {
-        return {
+        return toJS({
           ...contact,
-          ...userInfo
-        };
+          ...userInfo,
+        });
+      } else {
+        return toJS(contact); // 转换为普通对象
       }
-      return contact;
     });
   },
   //计算获取登录用户的用户属性
@@ -202,16 +239,19 @@ export const store = observable({
     return this.loginUserInfos
   },
   //计算属性获取黑名单列表的用户
-  get enrichedBlackList(){
-    return this.blackList.map(user=>{
+  get enrichedBlackList() {
+    return this.blackList.map(user => {
       const userInfo = this.contactsUserInfos.get(user);
       if (userInfo) {
         return {
-          userId:user,
+          userId: user,
           ...userInfo
         };
       }
-      return {userId:user};
+      return {
+        userId: user
+      };
     })
-  }
+  },
+
 });

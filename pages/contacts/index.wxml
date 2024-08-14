@@ -20,7 +20,7 @@
 
     <scroll-view class="scroll-content" scroll-y="true" bindscrolltolower="onContactsScrolltolower">
       <van-cell-group title="联系人">
-        <van-cell wx:for="{{ searchStatus? searchSourceData: enrichedContactsList }}" wx:key="userId" wx:for-item="contactsItem" inset="true" clickable="true" title="{{contactsItem.nickname ||contactsItem.remark || contactsItem.userId}}" label="{{ contactsItem.userId }}">
+        <van-cell wx:for="{{ searchStatus? searchSourceData: enrichedContactsList }}" wx:key="userId" wx:for-item="contactsItem" inset="true" clickable="true" title="{{contactsItem.remark || contactsItem.nickname  || contactsItem.userId}}" label="{{ contactsItem.userId }}" data-userid="{{contactsItem.userId}}" data-remark="{{ contactsItem.remark }}" data-avatarurl="{{ contactsItem.avatarurl }}" data-nickname="{{ contactsItem.nickname }}" bind:tap="entryContactDetailPage">
           <van-icon slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="{{ contactsItem.avatarurl || '/static/avatar/defaultAvatarSingle.png' }}" />
         </van-cell>
       </van-cell-group>

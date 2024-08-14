@@ -1,24 +1,17 @@
-import {
-  createStoreBindings
-} from 'mobx-miniprogram-bindings';
-import {
-  store
-} from '../../store/index';
-import emContacts from '../../EaseIM/emApis/emContacts'
-const {
-  fetchContactsListFromServer
-} = emContacts()
-const app = getApp()
+import { createStoreBindings } from 'mobx-miniprogram-bindings';
+import { store } from '../../store/index';
+import emContacts from '../../EaseIM/emApis/emContacts';
+const { fetchContactsListFromServer } = emContacts();
+const app = getApp();
 Page({
-
   /**
    * 页面的初始数据
    */
   data: {
-    searchContactsValue: "",
+    searchContactsValue: '',
     searchStatus: false,
     searchSourceData: [],
-    tabbarPlaceholderHeight: app.globalData.tabbarHeight
+    tabbarPlaceholderHeight: app.globalData.tabbarHeight,
   },
 
   /**
@@ -30,17 +23,18 @@ Page({
       fields: ['contactsList', 'contactsUserInfos', 'enrichedContactsList'],
       actions: ['initContactsListFromServer'],
     });
+
     setTimeout(() => {
       if (!this.data.contactsList.length) {
         console.log('<<<<<发起远端联系人请求');
-        this.fetchContactsListFromServer()
+        this.fetchContactsListData()
       }
-    }, 500)
+    }, 500);
   },
-  async fetchContactsListFromServer() {
+  async fetchContactsListData() {
     try {
-      const res = await fetchContactsListFromServer()
-      this.initContactsListFromServer(res)
+      const res = await fetchContactsListFromServer();
+      this.initContactsListFromServer(res);
     } catch (error) {
       console.log('>>>>联系人请求成功', error);
     }
@@ -49,48 +43,56 @@ Page({
   onSearchFocus() {
     console.log('>>>>>搜索框聚焦');
     this.setData({
-      searchStatus: true
-    })
+      searchStatus: true,
+    });
     this.setData({
-      searchSourceData: this.data.enrichedContactsList
-    })
+      searchSourceData: this.data.enrichedContactsList,
+    });
   },
   onSearchBlur() {
     this.setData({
-      searchStatus: false
-    })
+      searchStatus: false,
+    });
   },
   onSearchCancel() {
     this.setData({
-      searchStatus: false
-    })
+      searchStatus: false,
+    });
   },
   onActionSearchInputValue() {
-    const searchResult = this.data.enrichedContactsList.filter(contacts => {
-      const {
-        userId,
-        remark
-      } = contacts;
+    const searchResult = this.data.enrichedContactsList.filter((contacts) => {
+      const { userId, remark } = contacts;
       const searchValue = this.data.searchContactsValue;
       const matchesId = userId?.includes(searchValue);
       const matchesRemark = remark?.includes(searchValue);
-      if (matchesId || contacts?.nickname?.includes(searchValue) || matchesRemark) {
-        return true
+      if (
+        matchesId ||
+        contacts?.nickname?.includes(searchValue) ||
+        matchesRemark
+      ) {
+        return true;
       } else {
-        return false
+        return false;
       }
-
     });
     this.setData({
-      searchSourceData: searchResult
-    })
+      searchSourceData: searchResult,
+    });
+  },
+  entryContactDetailPage(event) {
+    console.log('entryContactDetailPage',event);
+    const { currentTarget:{dataset} } = event
+    const { avatarurl,remark,userid,nickname } = dataset
+    console.log(' avatarurl,remark,userid', avatarurl,remark,userid,nickname);
+
+    wx.navigateTo({
+      url: `/pages/contactsDetail/index?avatarurl=${avatarurl || ''}&remark=${remark || ''}&userId=${userid || ''}&nickname=${nickname || ''}`,
+    });
   },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady() {
-
-  },
+  onReady() {},
 
   /**
    * 生命周期函数--监听页面显示
@@ -103,14 +105,12 @@ Page({
   /**
    * 生命周期函数--监听页面隐藏
    */
-  onHide() {
-
-  },
+  onHide() {},
 
   /**
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
     this.store.destroyStoreBindings();
-  }
-})
+  },
+});
