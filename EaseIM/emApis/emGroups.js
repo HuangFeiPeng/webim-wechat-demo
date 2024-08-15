@@ -42,10 +42,10 @@ const emGroups = () => {
         });
     });
   };
-  const getGroupMembersFromServer = (groupId) => {
+  const getGroupMembersFromServer = (groupId,pageNum=1,pageSize=100) => {
     //暂且仅取前100个群成员
-    const pageNum = 1,
-      pageSize = 100;
+    // const pageNum = 1,
+    //   pageSize = 100;
     return new Promise((resolve, reject) => {
       EMClient.listGroupMembers({
         pageNum: pageNum,

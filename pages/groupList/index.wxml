@@ -11,7 +11,11 @@
   </view>
   <van-search model:value="{{ searchGroupListValue }}" placeholder="搜索群组" bind:search="onSearch" bind:cancel="onSearchCancel" bind:focus="onSearchFocus" bind:change="onActionSearchInputValue" />
   <scroll-view scroll-y="true" lower-threshold="100" class="scroll-content" bindscrolltolower="onJoinGroupListScrolltolower">
-    <van-cell wx:for="{{ searchStatus? searchSourceData: joinedGroupList }}" wx:key="groupId" wx:for-item="joinGroupItem" center label="{{ joinGroupItem.groupId }}" clickable>
+    <van-cell wx:for="{{ searchStatus? searchSourceData: joinedGroupList }}" wx:key="groupId" wx:for-item="joinGroupItem" center label="{{ joinGroupItem.groupId }}" clickable
+   data-groupid="{{ joinGroupItem.groupId }}" 
+   data-grouprole="{{ joinGroupItem.role }}"
+   bind:tap="entryGroupDetailPage"
+    >
       <view slot="title" class="title_container">
         <view class="van-cell-text">{{joinGroupItem.groupName || joinGroupItem.groupId}}</view>
         <view wx:if="{{joinGroupItem.affiliationsCount>0}}">({{joinGroupItem.affiliationsCount}})</view>

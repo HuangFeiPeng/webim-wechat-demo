@@ -10,7 +10,9 @@
     "pages/blackList/index",
     "pages/contactsDetail/index",
     "pages/groupDetail/index",
-    "pages/contactsRemark/index"
+    "pages/contactsRemark/index",
+    "pages/groupMemberList/index",
+    "pages/editGroupInfos/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

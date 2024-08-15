@@ -24,7 +24,6 @@
         <view wx:if="{{ conversationItem.lastMessage.type==='txt' }}">{{ conversationItem.lastMessage.msg }}</view>
         <view wx:if="{{ conversationItem.lastMessage.type==='img' }}">[图片]</view>
         <view wx:if="{{ conversationItem.lastMessage.type==='video' }}">[视频]</view>
-        <view wx:if="{{ conversationItem.lastMessage.type==='video' }}">[视频]</view>
         <view wx:if="{{ conversationItem.lastMessage.type==='audio' }}">[语音]</view>
         <view wx:if="{{ conversationItem.lastMessage.type==='loc' }}">[位置]</view>
       </view>

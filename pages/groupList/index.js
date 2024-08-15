@@ -99,6 +99,14 @@ Page({
       searchSourceData: searchResult
     })
   },
+  entryGroupDetailPage(event){
+    const {currentTarget:{dataset}} = event 
+    const { groupid,grouprole } = dataset
+    console.log('event',event);
+    wx.navigateTo({
+      url: `/pages/groupDetail/index?groupId=${groupid}&groupRole=${grouprole}`,
+    })
+  },
   /**
    * 生命周期函数--监听页面卸载
    */

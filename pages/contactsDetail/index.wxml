@@ -13,11 +13,11 @@
     <view class="contacts_detail_container_header_func_box">
       <view class="func_btn_container">
         <view class="func_btn_container_view">
-          <image src="/static/contacts_detail/bubble_fill.png" mode="aspectFill" />
+          <image src="/static/detail/bubble_fill.png" mode="aspectFill" />
           <text>发消息</text>
         </view>
         <view class="func_btn_container_view">
-          <image src="/static/contacts_detail/magnifier.png" mode="aspectFill" />
+          <image src="/static/detail/magnifier.png" mode="aspectFill" />
           <text>搜索消息</text>
         </view>
       </view>
