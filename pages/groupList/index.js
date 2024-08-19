@@ -24,6 +24,7 @@ Page({
    */
   onLoad(options) {
     this.callFetchJoinGroupListData()
+    console.log('groupList onload');
   },
   onClickLeft() {
     wx.navigateBack()
@@ -97,6 +98,11 @@ Page({
     });
     this.setData({
       searchSourceData: searchResult
+    })
+  },
+  entryCreateGroupPage(){
+    wx.navigateTo({
+      url: '/pages/createGroup/index',
     })
   },
   entryGroupDetailPage(event){

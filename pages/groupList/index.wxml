@@ -10,12 +10,9 @@
     <van-skeleton title avatar row="1" loading="{{ loading }}" />
   </view>
   <van-search model:value="{{ searchGroupListValue }}" placeholder="搜索群组" bind:search="onSearch" bind:cancel="onSearchCancel" bind:focus="onSearchFocus" bind:change="onActionSearchInputValue" />
+  <van-cell title="创建群组" is-link bind:tap="entryCreateGroupPage" />
   <scroll-view scroll-y="true" lower-threshold="100" class="scroll-content" bindscrolltolower="onJoinGroupListScrolltolower">
-    <van-cell wx:for="{{ searchStatus? searchSourceData: joinedGroupList }}" wx:key="groupId" wx:for-item="joinGroupItem" center label="{{ joinGroupItem.groupId }}" clickable
-   data-groupid="{{ joinGroupItem.groupId }}" 
-   data-grouprole="{{ joinGroupItem.role }}"
-   bind:tap="entryGroupDetailPage"
-    >
+    <van-cell wx:for="{{ searchStatus? searchSourceData: joinedGroupList }}" wx:key="groupId" wx:for-item="joinGroupItem" center label="{{ joinGroupItem.groupId }}" clickable data-groupid="{{ joinGroupItem.groupId }}" data-grouprole="{{ joinGroupItem.role }}" bind:tap="entryGroupDetailPage">
       <view slot="title" class="title_container">
         <view class="van-cell-text">{{joinGroupItem.groupName || joinGroupItem.groupId}}</view>
         <view wx:if="{{joinGroupItem.affiliationsCount>0}}">({{joinGroupItem.affiliationsCount}})</view>
@@ -28,6 +25,5 @@
         <van-tag type="danger" wx:if="{{ !joinGroupItem.public}}">私有群</van-tag>
       </view>
     </van-cell>
-
   </scroll-view>
 </view>
