@@ -4,8 +4,8 @@
     <view slot="title">黑名单
     </view>
   </van-nav-bar>
-
-  <scroll-view scroll-y="true" class="scroll-content">
+  <van-empty wx:if="{{ !enrichedBlackList.length }}" description="黑名单里没有人~" />
+  <scroll-view wx:if="{{ enrichedBlackList.length }}" scroll-y="true" class="scroll-content">
     <van-cell wx:for="{{ enrichedBlackList }}" wx:key="userId" wx:for-item="blackItem" center clickable>
       <view slot="title" class="title_container">
         <view class="van-cell-text">{{blackItem.nickname || blackItem.userId}}</view>

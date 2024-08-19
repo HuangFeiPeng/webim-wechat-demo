@@ -1,12 +1,14 @@
-// layout/tabbar/index.js
-Component({
-  /**
-   * 组件的属性列表
-   */
-
+import { ComponentWithStore } from 'mobx-miniprogram-bindings';
+import { store } from '../store/index';
+ComponentWithStore({
   /**
    * 组件的初始数据
    */
+  storeBindings:{
+    store: store,
+    fields: ['notificationsList','totalUnreadCount'],
+    // actions: ['update']
+  },
   data: {
     active: 0,
     border:false,

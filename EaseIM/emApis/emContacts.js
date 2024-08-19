@@ -56,7 +56,14 @@ const emContacts = () => {
   };
   const declineContactInvite = (contactId) => {
     if (contactId) {
-      EMClient.declineContactInvite(contactId);
+      return new Promise((resolve,reject)=>{
+        EMClient.declineContactInvite(contactId).then(res=>{
+          resolve(res)
+        }).catch(error=>{
+          reject(error)
+        })
+      })
+
     }
   };
   const getBlocklistFromServer = () => {

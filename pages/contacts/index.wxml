@@ -12,7 +12,7 @@
   <!-- 联系人内容 -->
   <view class="contacts_content">
     <van-cell-group>
-      <van-cell is-link title="新请求" link-type="navigateTo" url="/pages/dashboard/index" />
+      <van-cell is-link title="新请求" link-type="navigateTo" url="/pages/notifications/index" />
       <van-cell is-link title="添加朋友" link-type="navigateTo" url="/pages/addContacts/index" />
       <van-cell is-link title="群组" link-type="navigateTo" url="/pages/groupList/index" />
       <van-cell is-link title="黑名单" link-type="navigateTo" url="/pages/blackList/index" />

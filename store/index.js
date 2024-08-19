@@ -31,6 +31,8 @@ export const store = observable({
   /* 我的相关 */
   loginEMUserId: EMClient.user,
   loginUserInfos: {}, //登录用户属性
+  /* 新通知 */
+  notificationsList: [],
 
   /* actions methods */
   /* 会话列表相关 */
@@ -146,8 +148,8 @@ export const store = observable({
   //删除本地store中的ContactList
   deleteContactsListFromStore: action(function (userId) {
     const index = this.contactsList.findIndex(contact => contact.userId === userId);
-    if(index !== -1){
-      runInAction(()=>{
+    if (index !== -1) {
+      runInAction(() => {
         this.contactsList.splice(index, 1);
         // 重新赋值数组以确保 MobX 能够检测到变化
         this.contactsList = [...this.contactsList];
@@ -210,6 +212,21 @@ export const store = observable({
       ...userInfos[this.loginEMUserId]
     }
   }),
+  /* 新请求相关 */
+  updateNotificationsList: action(function (data) {
+    console.log('updateNotificationsList', data);
+    if (!this.notificationsList.some(item => item.key === data.key)) {
+      let result = []
+      result.unshift(data)
+      this.notificationsList = [...result, ...this.notificationsList]
+    }
+
+  }),
+  deleteNotificationList: action(function (userId) {
+    this.notificationsList = this.notificationsList.filter((item) =>
+      item.key !== userId
+    )
+  }),
   /* 计算属性 */
   // 计算未读消息总数的计算属性
   get totalUnreadCount() {
@@ -253,5 +270,4 @@ export const store = observable({
       };
     })
   },
-
 });

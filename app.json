@@ -13,7 +13,8 @@
     "pages/contactsRemark/index",
     "pages/groupMemberList/index",
     "pages/editGroupInfos/index",
-    "pages/createGroup/index"
+    "pages/createGroup/index",
+    "pages/notifications/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",
