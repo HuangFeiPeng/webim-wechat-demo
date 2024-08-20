@@ -2,7 +2,7 @@
 <view class="conversation_container">
   <!-- nav-bar -->
   <van-nav-bar>
-    <van-icon slot="left" size="50rpx" name="https://download-sdk.oss-cn-beijing.aliyuncs.com/downloads/IMDemo/avatar/Image2.png" />
+    <van-image slot="left" width="60rpx" height="60rpx" radius="5" src="{{ loginUserInfosData.avatarurl || '/static/avatar/defaultAvatarSingle.png' }}" />
     <view slot="title">会话
       <van-loading wx:if="{{conversationLoading}}" color="#1989fa" size="25rpx" />
     </view>
@@ -14,7 +14,8 @@
   <!-- 搜索输入框 -->
   <van-search model:value="{{ searchConversationValue }}" placeholder="请输入搜索关键词" input-align="center" bind:focus="onSearchFocus" bind:cancel="onSearchCancel" bind:change="onActionSearchInputValue" />
   <!-- 会话列表滚动 -->
-  <scroll-view class="scroll-content" scroll-y="true" bindscrolltolower="onConversationScrolltolower">
+  <van-empty wx:if="{{ !conversationList.length }}" description="暂无会话" />
+  <scroll-view  wx:if="{{ conversationList.length }}" class="scroll-content" scroll-y="true" bindscrolltolower="onConversationScrolltolower">
     <van-cell wx:for="{{  searchStatus? searchSourceData: conversationList}}" wx:for-item="conversationItem" wx:key="conversationId" inset="true" clickable="true" bind:longpress="onCallOpenConversationHandlerActionSheet" data-conversationid="{{conversationItem.conversationId}}" data-conversationtype="{{conversationItem.conversationType}}" bind:tap="onEntryChatPage">
       <van-icon wx:if="{{ conversationItem.conversationType==='singleChat' }}" slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="{{ conversationItem.avatarurl?conversationItem.avatarurl: '/static/avatar/defaultAvatarSingle.png' }}" info="{{ conversationItem.unReadCount?conversationItem.unReadCount : '' }}" />
       <van-icon wx:if="{{ conversationItem.conversationType==='groupChat' }}" slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="/static/avatar/defaultAvatarGroup.png" info="{{ conversationItem.unReadCount?conversationItem.unReadCount : '' }}" />

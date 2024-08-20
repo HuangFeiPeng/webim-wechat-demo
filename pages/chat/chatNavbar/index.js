@@ -20,9 +20,7 @@ Component({
    */
   methods: {
     onBackPage(){
-      wx.navigateTo({
-        url: 'url',
-      })
+     wx.navigateBack()
     }
   }
 })

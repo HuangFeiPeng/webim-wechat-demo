@@ -6,10 +6,14 @@ import {
   store
 } from '../../store/index';
 import emConversation from '../../EaseIM/emApis/emConversation'
+import emUserInfos from '../../EaseIM/emApis/emUserInfos'
 const {
   fetchConversationFromServer,
   removeConversationFromServer
 } = emConversation()
+const {
+  fetchUserInfoWithLoginId
+} = emUserInfos()
 const app = getApp();
 Page({
   /**
@@ -44,8 +48,8 @@ Page({
   onLoad(options) {
     this.store = createStoreBindings(this, {
       store,
-      fields: ['conversationList'],
-      actions: ['initConversationListFromServer', 'removeConversation'],
+      fields: ['conversationList','loginUserInfosData'],
+      actions: ['initConversationListFromServer', 'removeConversation','getLoginUserInfos'],
     });
     setTimeout(() => {
       if (!this.data.conversationLoading?.length) {
@@ -56,6 +60,20 @@ Page({
         this.fetchConversationDataFromServer()
       }
     }, 500)
+    this.fetchLoginUserInfosData()
+  },
+  async fetchLoginUserInfosData() {
+    try {
+      const res = await fetchUserInfoWithLoginId()
+      console.log('>>>>>登录用户获取成功',res);
+      
+      this.getLoginUserInfos(res)
+    } catch (error) {
+      console.log(error);
+      wx.showToast({
+        title: '登录用户属性获取失败',
+      })
+    }
   },
   async fetchConversationDataFromServer() {
     try {

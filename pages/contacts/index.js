@@ -20,7 +20,7 @@ Page({
   onLoad(options) {
     this.store = createStoreBindings(this, {
       store,
-      fields: ['contactsList', 'contactsUserInfos', 'enrichedContactsList','notificationsList'],
+      fields: ['contactsList', 'contactsUserInfos', 'enrichedContactsList','notificationsList','loginUserInfosData'],
       actions: ['initContactsListFromServer'],
     });
 

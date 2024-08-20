@@ -2,6 +2,7 @@
 <!-- nav-bar -->
 <van-nav-bar fixed placeholder="{{ true }}" >
   <view class="chat_navbar_left_container" slot="left">
+    <van-icon color="#009eff" name="arrow-left" size="40rpx" bind:tap="onBackPage" />
     <van-icon size="50rpx" name="https://download-sdk.oss-cn-beijing.aliyuncs.com/downloads/IMDemo/avatar/Image2.png" />
     <text>张三今天没带伞</text>
   </view>

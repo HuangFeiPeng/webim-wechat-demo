@@ -2,7 +2,7 @@
 <view class="contacts_container">
   <!-- nav-bar -->
   <van-nav-bar>
-    <van-icon slot="left" size="50rpx" name="https://download-sdk.oss-cn-beijing.aliyuncs.com/downloads/IMDemo/avatar/Image2.png" />
+    <van-image slot="left" width="60rpx" height="60rpx" radius="5" src="{{ loginUserInfosData.avatarurl || '/static/avatar/defaultAvatarSingle.png' }}" />
     <view slot="title">联系人
       <van-loading wx:if="{{conversationLoading}}" color="#1989fa" size="25rpx" />
     </view>
