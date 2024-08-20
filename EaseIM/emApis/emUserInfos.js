@@ -1,4 +1,6 @@
-import { EMClient } from '../index';
+import {
+  EMClient
+} from '../index';
 const _chunkArr = (oldArr, num) => {
   oldArr.sort((a, b) => {
     return a - b;
@@ -22,7 +24,9 @@ const emUserInofs = () => {
       if (userId) {
         EMClient.fetchUserInfoById(userId)
           .then((res) => {
-            const { data } = res;
+            const {
+              data
+            } = res;
             resolve(data);
           })
           .catch((error) => {
@@ -38,7 +42,9 @@ const emUserInofs = () => {
       if (friendList.length && friendList.length < 99) {
         EMClient.fetchUserInfoById(friendList)
           .then((res) => {
-            const { data } = res;
+            const {
+              data
+            } = res;
             resolve(data);
           })
           .catch((error) => {
@@ -49,7 +55,9 @@ const emUserInofs = () => {
         for (let i = 0; i < newArr.length; i++) {
           EMClient.fetchUserInfoById(newArr[i])
             .then((res) => {
-              const { data } = res;
+              const {
+                data
+              } = res;
               resolve(data);
             })
             .catch((error) => {
@@ -61,9 +69,13 @@ const emUserInofs = () => {
   };
   const updateUserInfosFromServer = (params) => {
     return new Promise((resolve, reject) => {
-      EMClient.updateUserInfo({ ...params })
+      EMClient.updateUserInfo({
+          ...params
+        })
         .then((res) => {
-          const { data } = res;
+          const {
+            data
+          } = res;
           resolve(data);
         })
         .catch((error) => {
@@ -71,10 +83,22 @@ const emUserInofs = () => {
         });
     });
   };
+  const updateLoginUserInfos = (params) => {
+    return new Promise((resolve, reject) => {
+      EMClient.updateUserInfo({
+        ...params
+      }).then((res) => {
+        resolve(res)
+      }).catch(err => {
+        reject(err)
+      })
+    })
+  }
   return {
     fetchUserInfoWithLoginId,
     fetchOtherInfoFromServer,
     updateUserInfosFromServer,
+    updateLoginUserInfos
   };
 };
 export default emUserInofs;

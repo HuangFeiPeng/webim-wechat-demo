@@ -208,6 +208,7 @@ export const store = observable({
   /* 我的相关 */
   getLoginUserInfos: action(function (userInfos) {
     console.log('userInfos', userInfos, );
+    this.loginEMUserId = EMClient.user
     this.loginUserInfos = {
       ...userInfos[this.loginEMUserId]
     }

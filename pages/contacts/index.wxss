@@ -18,3 +18,8 @@ page {
   flex: 1; /* 占据剩余空间 */
   overflow-y: scroll; /* 启用滚动 */
 }
+.custom-dot {
+  margin-left: 5px;
+  color: red;
+  font-size: 10px;
+}

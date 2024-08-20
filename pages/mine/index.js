@@ -4,7 +4,9 @@ import {
 import {
   store
 } from '../../store/index';
+import { EMClient } from '../../EaseIM/index'
 import emUserInfos from '../../EaseIM/emApis/emUserInfos'
+import Dialog from '@vant/weapp/dialog/dialog';
 const {
   fetchUserInfoWithLoginId
 } = emUserInfos()
@@ -15,6 +17,7 @@ Page({
    * 页面的初始数据
    */
   data: {
+    sdkVersation:'',
     tabbarPlaceholderHeight: app.globalData.tabbarHeight
   },
 
@@ -32,6 +35,10 @@ Page({
        this.fetchLoginUserInfosData()
       }
     },500)
+    console.log(EMClient);
+    this.setData({
+      sdkVersion:EMClient.version
+    })
   },
   async fetchLoginUserInfosData() {
     try {
@@ -45,6 +52,25 @@ Page({
         title: '登录用户属性获取失败',
       })
     }
+  },
+  onChange(event) {
+    Dialog.confirm({
+        title: '退出登录',
+        message: `确定要退出“${this.data.loginUserInfosData?.nickname || this.data.loginEMUserId}”该账号？`,
+      })
+      .then(() => {
+        // on confirm
+        this.handleEMLogout()
+      })
+      .catch(() => {
+        // on cancel
+      });
+  },
+  handleEMLogout(){
+    EMClient.close()
+    wx.reLaunch({
+      url: '/pages/login/index',
+    })
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

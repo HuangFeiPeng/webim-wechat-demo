@@ -18,17 +18,18 @@
     <view class="mine_content_body">
       <!-- 设置cell -->
       <van-cell-group title="设置">
-        <van-cell title="用户状态" value="在线" icon="/static/mine/presence_cell_icon.png" is-link />
-        <van-cell title="通用" icon="/static/mine/general_cell_icon.png" is-link />
-        <van-cell title="个人信息" icon="/static/mine/profile_cell_icon.png" is-link />
-        <van-cell title="隐私" icon="/static/mine/privacy_cell_icon.png" is-link />
-        <van-cell title="关于" icon="/static/mine/about_cell_icon.png" is-link />
+        <!-- <van-cell title="用户状态" value="在线" icon="/static/mine/presence_cell_icon.png" is-link /> -->
+        <!-- <van-cell title="通用" icon="/static/mine/general_cell_icon.png" is-link /> -->
+        <van-cell title="个人信息" url="/pages/profileEdit/profilePrview/index" link-type="navigateTo" icon="/static/mine/profile_cell_icon.png" is-link />
+        <van-cell title="隐私" icon="/static/mine/privacy_cell_icon.png" url="/pages/blackList/index" is-link />
+        <van-cell title="关于" icon="/static/mine/about_cell_icon.png" label="{{'Easemob mini program SDK：' + sdkVersion}}"   />
       </van-cell-group>
       <!-- 账号cell -->
       <van-cell-group title="账号">
-        <van-cell title-class="mine_account_text" title="退出登录" is-link />
+        <van-cell title-class="mine_account_text" title="退出登录" is-link bind:tap="onChange" />
       </van-cell-group>
     </view>
   </view>
+  <van-dialog id="van-dialog" confirm-button-color="#009eff" />
   <view class="tabbar_placeholder_box" style="height: {{tabbarPlaceholderHeight}}px;"></view>
 </view>

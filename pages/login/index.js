@@ -1,7 +1,8 @@
 // pages/login/index.js
 import emConnect from '../../EaseIM/emApis/emConnect.js'
 const {
-  loginWithPassword
+  loginWithPassword,
+  loginWithAccessToken
 } = emConnect()
 Page({
 
@@ -24,7 +25,8 @@ Page({
   },
   async onEntryConversationPage() {
     try {
-      await loginWithPassword('hfp', '1')
+      // await loginWithPassword('hfp', '1')
+      await loginWithAccessToken('9258f9d5fb', 'YWMtWWNl5F64Ee-yd8MXMAFbTlzzvlQ7sUrSpVuQGlyIzFQPontQpikR7bOrSTabUrc-AwMAAAGRblfOFTeeSACD4MTKml8Gxq9cSojO0tzIgQmU3q8k_SXDaJakSAH8pQ')
       wx.switchTab({
         url: '../conversation/index',
       })
