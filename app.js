@@ -28,7 +28,7 @@ App({
     /* 连接监听 */
     EMClient.addEventHandler("CONNECT", {
       onConnected: () => {
-        console.log("onConnected", store);
+        console.log("onConnected");
       },
       // 自 4.8.0 版本，`onDisconnected` 事件新增断开原因回调参数, 告知用户触发 `onDisconnected` 的原因。
       onDisconnected: () => {
@@ -45,25 +45,36 @@ App({
     EMClient.addEventHandler('MESSAGE', {
       // 当前用户收到文本消息。
       onTextMessage: (message) => {
-        store.updateNotificationsList({
-          key: 3,
-          value: 'oiahowdahdowa'
-        })
+        store.updateConversationLastMessage({...message})
       },
       // 当前用户收到图片消息。
-      onImageMessage: function (message) {},
+      onImageMessage: (message) => {
+        
+      },
       // 当前用户收到透传消息。
-      onCmdMessage: function (message) {},
+      onCmdMessage: (message) => {
+        
+      },
       // 当前用户收到语音消息。
-      onAudioMessage: function (message) {},
+      onAudioMessage: (message) => {
+        
+      },
       // 当前用户收到位置消息。
-      onLocationMessage: function (message) {},
+      onLocationMessage: (message) => {
+        
+      },
       // 当前用户收到文件消息。
-      onFileMessage: function (message) {},
+      onFileMessage: (message) => {
+        
+      },
       // 当前用户收到自定义消息。
-      onCustomMessage: function (message) {},
+      onCustomMessage: (message) => {
+        
+      },
       // 当前用户收到视频消息。
-      onVideoMessage: function (message) {},
+      onVideoMessage: (message) => {
+        
+      },
     })
     /* 好友关系监听 */
     EMClient.addEventHandler("CONTACTS", {
@@ -183,6 +194,7 @@ App({
       }
     })
   },
+
   onUnload() {},
 
 });

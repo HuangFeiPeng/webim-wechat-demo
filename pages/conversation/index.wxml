@@ -14,15 +14,15 @@
   <!-- 搜索输入框 -->
   <van-search model:value="{{ searchConversationValue }}" placeholder="请输入搜索关键词" input-align="center" bind:focus="onSearchFocus" bind:cancel="onSearchCancel" bind:change="onActionSearchInputValue" />
   <!-- 会话列表滚动 -->
-  <van-empty wx:if="{{ !conversationList.length }}" description="暂无会话" />
-  <scroll-view  wx:if="{{ conversationList.length }}" class="scroll-content" scroll-y="true" bindscrolltolower="onConversationScrolltolower">
-    <van-cell wx:for="{{  searchStatus? searchSourceData: conversationList}}" wx:for-item="conversationItem" wx:key="conversationId" inset="true" clickable="true" bind:longpress="onCallOpenConversationHandlerActionSheet" data-conversationid="{{conversationItem.conversationId}}" data-conversationtype="{{conversationItem.conversationType}}" bind:tap="onEntryChatPage">
+  <van-empty wx:if="{{ !enrichedConversationList.length }}" description="暂无会话" />
+  <scroll-view  wx:if="{{ enrichedConversationList.length }}" class="scroll-content" scroll-y="true" bindscrolltolower="onConversationScrolltolower">
+    <van-cell wx:for="{{  searchStatus? searchSourceData: enrichedConversationList}}" wx:for-item="conversationItem" wx:key="conversationId" inset="true" clickable="true" bind:longpress="onCallOpenConversationHandlerActionSheet" data-conversationid="{{conversationItem.conversationId}}" data-conversationtype="{{conversationItem.conversationType}}" data-conversation-item="{{ conversationItem }}"  bind:tap="onEntryChatPage">
       <van-icon wx:if="{{ conversationItem.conversationType==='singleChat' }}" slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="{{ conversationItem.avatarurl?conversationItem.avatarurl: '/static/avatar/defaultAvatarSingle.png' }}" info="{{ conversationItem.unReadCount?conversationItem.unReadCount : '' }}" />
       <van-icon wx:if="{{ conversationItem.conversationType==='groupChat' }}" slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="/static/avatar/defaultAvatarGroup.png" info="{{ conversationItem.unReadCount?conversationItem.unReadCount : '' }}" />
       <view slot="title">
         <view wx:if="{{ conversationItem.conversationType === 'singleChat' }}" class="van-cell-text">{{ conversationItem.nickname || conversationItem.conversationId}}</view>
         <view wx:if="{{ conversationItem.conversationType === 'groupChat' }}" class="van-cell-text">{{ conversationItem.name || conversationItem.conversationId}}</view>
-        <view wx:if="{{ conversationItem.lastMessage.type==='txt' }}">{{ conversationItem.lastMessage.msg }}</view>
+        <view class="text-ellipsis" wx:if="{{ conversationItem.lastMessage.type==='txt' }}">{{ conversationItem.lastMessage.msg }}</view>
         <view wx:if="{{ conversationItem.lastMessage.type==='img' }}">[图片]</view>
         <view wx:if="{{ conversationItem.lastMessage.type==='video' }}">[视频]</view>
         <view wx:if="{{ conversationItem.lastMessage.type==='audio' }}">[语音]</view>

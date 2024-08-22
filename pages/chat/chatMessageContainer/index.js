@@ -5,7 +5,10 @@ Component({
    * 组件的属性列表
    */
   properties: {
-
+    messageList: {
+      type: Array,
+      value: []
+    }
   },
 
   /**
@@ -13,7 +16,7 @@ Component({
    */
   data: {
     scrollHeight: 0, // 初始滚动位置
-    mockMessageList: new Array(100).fill(1).map((_, i) => `user${i + 1}`)
+    // mockMessageList: new Array(100).fill(1).map((_, i) => `user${i + 1}`)
   },
   lifetimes: {
     ready() {
@@ -27,16 +30,17 @@ Component({
   methods: {
     onMessageScrolltoupper() {
       console.log('>>>>>列表滚动置顶。。。')
-
+      //滚动置顶加载更多会话。
+      this.triggerEvent('onLoadMoreHistoryMessageData')
     },
     scrollToBottom() {
       console.log('>>>>执行滚动置底');
-      setTimeout(()=>{
-         this.setData({
-        scrollHeight: 10000000
-      })
-      },100)
-     
+      setTimeout(() => {
+        this.setData({
+          scrollHeight: 10000000
+        })
+      }, 230)
+
 
     }
   }

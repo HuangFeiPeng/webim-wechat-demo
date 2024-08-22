@@ -1,10 +1,11 @@
 <!--pages/chat/chatNavbar/index.wxml-->
 <!-- nav-bar -->
-<van-nav-bar fixed placeholder="{{ true }}" >
+<van-nav-bar fixed placeholder="{{ true }}">
   <view class="chat_navbar_left_container" slot="left">
     <van-icon color="#009eff" name="arrow-left" size="40rpx" bind:tap="onBackPage" />
-    <van-icon size="50rpx" name="https://download-sdk.oss-cn-beijing.aliyuncs.com/downloads/IMDemo/avatar/Image2.png" />
-    <text>张三今天没带伞</text>
+    <van-icon wx:if="{{ chatType==='groupChat' }}" size="50rpx" name="/static/avatar/defaultAvatarGroup.png" />
+    <van-icon wx:if="{{ chatType==='singleChat' }}" size="50rpx" name="{{ conversationParams.avatarurl?conversationParams.avatarurl:'/static/avatar/defaultAvatarSingle.png' }}" />
+    <text>{{ conversationParams.title || targetId }}</text>
   </view>
 
 </van-nav-bar>

@@ -1,6 +1,6 @@
 <!--pages/chat/chatMessage/index.wxml-->
-<scroll-view class="scroll_view" scroll-y="true" bindscrolltoupper="onMessageScrolltoupper" scroll-top="{{scrollHeight}}">
-  <view wx:for="{{ mockMessageList }}" wx:key="*this">
-    11111
+<scroll-view class="scroll_view" scroll-y="true" upper-threshold="100" bindscrolltoupper="onMessageScrolltoupper" scroll-top="{{scrollHeight}}">
+  <view class="message_item_container" wx:for="{{ messageList }}" wx:key="id">
+    {{item.msg}}
   </view>
 </scroll-view>

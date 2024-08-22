@@ -5,7 +5,18 @@ Component({
    * 组件的属性列表
    */
   properties: {
-
+    chatType:{
+      type: String,
+      value: ''
+    },
+    targetId:{
+      type:String,
+      value:''
+    },
+    conversationParams:{
+      type:Object,
+      value:()=>({})
+    }
   },
 
   /**

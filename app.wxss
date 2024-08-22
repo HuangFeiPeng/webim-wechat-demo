@@ -4,6 +4,16 @@ page {
     Segoe UI, Arial, Roboto, 'PingFang SC', 'miui', 'Hiragino Sans GB', 'Microsoft Yahei',
     sans-serif;
 }
+.text-ellipsis {
+  /* 限制显示在一行 */
+  white-space: nowrap; 
+  /* 隐藏溢出的文本 */
+  overflow: hidden; 
+  /* 文本溢出时显示省略号 */
+  text-overflow: ellipsis;
+  /* 可选：设置最大宽度 */
+  max-width: 150px; /* 根据实际需要调整宽度 */
+}
 
 .container {
   height: 100%;

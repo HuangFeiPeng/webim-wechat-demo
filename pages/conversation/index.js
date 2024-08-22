@@ -9,7 +9,8 @@ import emConversation from '../../EaseIM/emApis/emConversation'
 import emUserInfos from '../../EaseIM/emApis/emUserInfos'
 const {
   fetchConversationFromServer,
-  removeConversationFromServer
+  removeConversationFromServer,
+  sendChannelAck
 } = emConversation()
 const {
   fetchUserInfoWithLoginId
@@ -48,8 +49,10 @@ Page({
   onLoad(options) {
     this.store = createStoreBindings(this, {
       store,
-      fields: ['conversationList','loginUserInfosData'],
-      actions: ['initConversationListFromServer', 'removeConversation','getLoginUserInfos'],
+      fields: ['enrichedConversationList', 'loginUserInfosData'],
+      actions: ['initConversationListFromServer', 'removeConversation', 'getLoginUserInfos',
+        'clearConversationItemUnReadCount'
+      ],
     });
     setTimeout(() => {
       if (!this.data.conversationLoading?.length) {
@@ -65,8 +68,8 @@ Page({
   async fetchLoginUserInfosData() {
     try {
       const res = await fetchUserInfoWithLoginId()
-      console.log('>>>>>登录用户获取成功',res);
-      
+      console.log('>>>>>登录用户获取成功', res);
+
       this.getLoginUserInfos(res)
     } catch (error) {
       console.log(error);
@@ -154,13 +157,13 @@ Page({
       searchStatus: false
     })
   },
-  onSearchCancel(){
+  onSearchCancel() {
     this.setData({
       searchStatus: false
     })
   },
   onActionSearchInputValue() {
-    const searchResult = this.data.conversationList.filter(conversation => {
+    const searchResult = this.data.enrichedConversationList.filter(conversation => {
       const {
         conversationType,
         conversationId,
@@ -177,13 +180,51 @@ Page({
       return false; // 如果 conversationType 不是 singleChat 或 groupChat，则不匹配
     });
     this.setData({
-      searchSourceData:searchResult
+      searchSourceData: searchResult
     })
   },
-  onEntryChatPage() {
+  onEntryChatPage(event) {
+    console.log('>>>>event', event);
+    const {
+      currentTarget: {
+        dataset
+      }
+    } = event
+    const {
+      conversationid,
+      conversationtype,
+      conversationItem
+    } = dataset
+    console.log('conversationItem', conversationItem);
+    const conversationParams = {
+      title: '',
+      avatarurl: ''
+    }
+    if (conversationtype === 'groupChat') {
+      const {
+        name
+      } = conversationItem
+      conversationParams.title = name
+    }
+    if (conversationtype === 'singleChat') {
+      const {
+        nickname,
+        avatarurl
+      } = conversationItem
+      conversationParams.title = nickname ? nickname : ""
+      conversationParams.avatarurl = avatarurl ? avatarurl : ""
+    }
+    //unReadCount如果不为0，则执行清零操作。
+    if (conversationItem.unReadCount > 0) {
+      this.handleSendChanneAck(conversationtype, conversationid)
+    }
     wx.navigateTo({
-      url: '../chat/index',
+      url: `/pages/chat/index?conversationId=${conversationid}&conversationType=${conversationtype}&conversationParams=${JSON.stringify(conversationParams)}`,
     });
+  },
+  handleSendChanneAck(chatType, targetId) {
+    sendChannelAck(targetId, chatType)
+    this.clearConversationItemUnReadCount(targetId)
   },
   /**
    * 生命周期函数--监听页面初次渲染完成

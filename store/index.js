@@ -12,6 +12,7 @@ import emGroups from '../EaseIM/emApis/emGroups'
 import {
   EMClient
 } from '../EaseIM/index'
+import getMessageKey from '../utils/setMessageKey'
 const {
   fetchOtherInfoFromServer,
 } = emUserInfos()
@@ -22,6 +23,7 @@ export const store = observable({
   /* 会话列表相关 */
   conversationList: [], // 会话列表
   conversationCursor: '', //会话列表分页游标
+  chatingConversationId: '', //对话中的会话ID（进入聊天页面的会话）
   /* 联系人相关 */
   contactsList: [], //联系人列表
   contactsUserInfos: new Map(),
@@ -69,22 +71,22 @@ export const store = observable({
       Promise.all([fetchSingleChatInfos, fetchGroupChatInfos]).then(([userInfos, groupInfos]) => {
         runInAction(() => {
           // 合并 singleChat 用户属性到对应的会话
-          observableConversations.forEach(conversation => {
-            if (conversation.conversationType === 'singleChat' && userInfos[conversation.conversationId]) {
-              set(conversation, userInfos[conversation.conversationId]);
-              // 更新 contactsUserInfos
-              this.contactsUserInfos.set(conversation.conversationId, userInfos[conversation.conversationId]);
-            }
-            // 合并 groupChat 群组属性到对应的会话
-            if (conversation.conversationType === 'groupChat') {
-              const groupInfo = groupInfos.find(group => group.id === conversation.conversationId);
-              if (groupInfo) {
-                set(conversation, groupInfo);
-                // 更新 groupInfos
-                this.groupInfos.set(conversation.conversationId, groupInfo);
-              }
-            }
-          });
+          // observableConversations.forEach(conversation => {
+          //   if (conversation.conversationType === 'singleChat' && userInfos[conversation.conversationId]) {
+          //     set(conversation, userInfos[conversation.conversationId]);
+          //     // 更新 contactsUserInfos
+          //     // this.contactsUserInfos.set(conversation.conversationId, userInfos[conversation.conversationId]);
+          //   }
+          //   // 合并 groupChat 群组属性到对应的会话
+          //   // if (conversation.conversationType === 'groupChat') {
+          //   //   const groupInfo = groupInfos.find(group => group.id === conversation.conversationId);
+          //   //   if (groupInfo) {
+          //   //     set(conversation, groupInfo);
+          //   //     // 更新 groupInfos
+          //   //     // this.groupInfos.set(conversation.conversationId, groupInfo);
+          //   //   }
+          //   // }
+          // });
           this.conversationList = observableConversations;
         });
       }).catch(err => {
@@ -95,32 +97,53 @@ export const store = observable({
   }),
   // 更新会话的 lastMessage
   updateConversationLastMessage: action(function (message) {
-    let conversationIndex = this.conversationList.findIndex(conv => conv.conversationId === message.conversationId);
+    const conversationId = getMessageKey(message)
+    console.log('updateConversationLastMessage 更新会话');
+    let conversationIndex = this.conversationList.findIndex(conv => conv.conversationId === conversationId);
     let conversation;
-
     if (conversationIndex !== -1) {
       // 如果会话存在，更新 lastMessage 并将其移动到数组最前面
       runInAction(() => {
         conversation = this.conversationList[conversationIndex];
+        if(this.chatingConversationId !== conversation.conversationId){
+          conversation.unReadCount = conversation.unReadCount + 1
+        }
         conversation.lastMessage = {
           ...message,
           time: formaterDate('MM/DD/HH:mm', message.time)
         };
         this.conversationList.splice(conversationIndex, 1);
         this.conversationList.unshift(conversation);
+        this.conversationList = [...this.conversationList]
       });
     } else {
       // 如果会话不存在，新建会话并移动到数组最前面
       runInAction(() => {
         conversation = observable({
-          conversationId: message.conversationId,
-          conversationType: message.conversationType,
+          conversationId: conversationId,
+          conversationType: message.chatType,
           lastMessage: {
             ...message,
             time: formaterDate('MM/DD/HH:mm', message.time)
-          }
+          },
+          unReadCount: 1
         });
         this.conversationList.unshift(conversation);
+        this.conversationList = [...this.conversationList]
+        console.log('创建新的会话', this.conversationList);
+      });
+    }
+  }),
+  // 清空会话列表的未读数
+  clearConversationItemUnReadCount: action(function (conversationId) {
+    let conversationIndex = this.conversationList.findIndex(conv => conv.conversationId === conversationId);
+    if (conversationIndex !== -1) {
+      runInAction(() => {
+        // 重新创建一个新的会话对象
+        let conversation = this.conversationList[conversationIndex]
+        conversation.unReadCount = 0
+        this.conversationList.splice(conversationIndex, 1, conversation);
+        this.conversationList = [...this.conversationList];
       });
     }
   }),
@@ -138,6 +161,10 @@ export const store = observable({
       });
 
     }
+  }),
+  //设置对话中会话id
+  setChatingConversationId: action(function (conversationId) {
+    this.chatingConversationId = conversationId
   }),
   /* 联系人相关 */
   //获取全部联系人
@@ -180,7 +207,11 @@ export const store = observable({
     if (userIds.length) {
       return new Promise((resolve, reject) => {
         fetchOtherInfoFromServer(userIds).then(res => {
-          console.log('>>>>>其他用户属性获取成功', res);
+          if (Object.keys(res).length) {
+            Object.keys(res).forEach(userId => {
+              this.contactsUserInfos.set(userId, res[userId])
+            })
+          }
           resolve(res);
         }).catch(error =>
           reject(error))
@@ -199,6 +230,12 @@ export const store = observable({
       return new Promise((resolve, reject) => {
         getGroupInfosFromServer(groupIds).then(res => {
           console.log('>>>>>群组详情获取成功', res);
+          if (res?.length) {
+            res.forEach(groupItem => {
+              // 更新 groupInfos
+              this.groupInfos.set(groupItem.id, groupItem);
+            })
+          }
           resolve(res);
         }).catch(error =>
           reject(error))
@@ -232,6 +269,33 @@ export const store = observable({
   // 计算未读消息总数的计算属性
   get totalUnreadCount() {
     return this.conversationList.reduce((sum, conversation) => sum + (conversation.unReadCount || 0), 0);
+  },
+  //会话列表内容包含单人好友属性，群组群组详情。
+  get enrichedConversationList() {
+    return this.conversationList.map(conversation => {
+      if (conversation.conversationType === 'singleChat') {
+        const userInfo = this.contactsUserInfos.get(conversation.conversationId);
+        if (userInfo) {
+          return toJS({
+            ...conversation,
+            ...userInfo,
+          });
+        } else {
+          return toJS(conversation); // 转换为普通对象
+        }
+      }
+      if (conversation.conversationType === 'groupChat') {
+        const groupInfo = this.groupInfos.get(conversation.conversationId);
+        if (groupInfo) {
+          return toJS({
+            ...conversation,
+            ...groupInfo,
+          });
+        } else {
+          return toJS(conversation); // 转换为普通对象
+        }
+      }
+    })
   },
   // 计算联系人列表中包含用户属性的联系人
   get enrichedContactsList() {

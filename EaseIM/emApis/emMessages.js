@@ -1,7 +1,5 @@
 import { EaseSDK, EMClient } from '../index';
-import { MESSAGE_TYPE } from '../constant';
-import { getEMKey } from '@/EaseIM/utils';
-import store from '@/store';
+import { MESSAGE_TYPE } from '../constant/index';
 const emMessages = () => {
   const reportMessages = (params) => {
     const { reportType, reportReason, messageId } = params;
@@ -26,7 +24,7 @@ const emMessages = () => {
         // 对方的用户 ID 或者群组 ID 或聊天室 ID。
         targetId: targetId,
         // 每页期望获取的消息条数。取值范围为 [1,50]，默认值为 20。
-        pageSize: 20,
+        pageSize: 50,
         // 查询的起始消息 ID。若该参数设置为 `-1`、`null` 或空字符串，从最新消息开始。
         cursor: cursor || -1,
         // 会话类型：（默认） `singleChat`：单聊；`groupChat`：群聊。
@@ -41,39 +39,6 @@ const emMessages = () => {
         .catch((e) => {
           // 获取失败。
           reject(e);
-        });
-    });
-  };
-  const sendDisplayMessages = (messageBody) => {
-    messageBody.from = EMClient.user;
-    const key = getEMKey(
-      EMClient.user,
-      messageBody.from,
-      messageBody.to,
-      messageBody.chatType
-    );
-    console.log('>>>>要发送的消息key', key);
-    return new Promise((resolve, reject) => {
-      const message = EaseSDK.message.create(messageBody);
-      console.log('>>>>构建的消息msg', message);
-      EMClient.send(message)
-        .then((res) => {
-          const { message: resMessage } = res;
-          //   message.id = res.serverMsgId;
-          console.log('>>>>>res更新后的消息体', res);
-          store.commit('UPDATE_MESSAGE_COLLECTION', {
-            key,
-            message: resMessage,
-          });
-          resolve(res);
-          //   store.commit('UPDATE_CONVERSATION_ITEM', {
-          //     conversationId: messageBody.to,
-          //     lastMessage: message,
-          //   });
-        })
-        .catch((err) => {
-          reject(err);
-          console.log('>>>>>发送失败', err);
         });
     });
   };
@@ -114,7 +79,6 @@ const emMessages = () => {
   return {
     reportMessages,
     fetchHistoryMessagesFromServer,
-    sendDisplayMessages,
     sendCommandMessages,
     modifyDisplayMessages,
   };
