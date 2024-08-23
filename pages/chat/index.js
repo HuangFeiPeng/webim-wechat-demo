@@ -45,7 +45,7 @@ Page({
     })
     this.store = createStoreBindings(this, {
       store,
-      fields: ['chatingConversationId'],
+      fields: ['chatingConversationId','loginUserInfosData'],
       actions: ['setChatingConversationId'],
     });
     this.mountEMPageListenner()

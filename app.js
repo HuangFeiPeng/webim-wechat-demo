@@ -49,31 +49,31 @@ App({
       },
       // 当前用户收到图片消息。
       onImageMessage: (message) => {
-        
+        store.updateConversationLastMessage({...message})
       },
       // 当前用户收到透传消息。
       onCmdMessage: (message) => {
-        
+        store.updateConversationLastMessage({...message})
       },
       // 当前用户收到语音消息。
       onAudioMessage: (message) => {
-        
+        store.updateConversationLastMessage({...message})
       },
       // 当前用户收到位置消息。
       onLocationMessage: (message) => {
-        
+        store.updateConversationLastMessage({...message})
       },
       // 当前用户收到文件消息。
       onFileMessage: (message) => {
-        
+        store.updateConversationLastMessage({...message})
       },
       // 当前用户收到自定义消息。
       onCustomMessage: (message) => {
-        
+        store.updateConversationLastMessage({...message})
       },
       // 当前用户收到视频消息。
       onVideoMessage: (message) => {
-        
+        store.updateConversationLastMessage({...message})
       },
     })
     /* 好友关系监听 */

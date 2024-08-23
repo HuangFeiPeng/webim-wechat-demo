@@ -14,7 +14,7 @@
   <scroll-view scroll-y="true" lower-threshold="100" class="scroll-content" bindscrolltolower="onJoinGroupListScrolltolower">
     <van-cell wx:for="{{ searchStatus? searchSourceData: joinedGroupList }}" wx:key="groupId" wx:for-item="joinGroupItem" center label="{{ joinGroupItem.groupId }}" clickable data-groupid="{{ joinGroupItem.groupId }}" data-grouprole="{{ joinGroupItem.role }}" bind:tap="entryGroupDetailPage">
       <view slot="title" class="title_container">
-        <view class="van-cell-text">{{joinGroupItem.groupName || joinGroupItem.groupId}}</view>
+        <view class="van-cell-text text-ellipsis">{{joinGroupItem.groupName || joinGroupItem.groupId}}</view>
         <view wx:if="{{joinGroupItem.affiliationsCount>0}}">({{joinGroupItem.affiliationsCount}})</view>
         <van-tag plain wx:if="{{ joinGroupItem.role==='owner' }}" type="danger">群主</van-tag>
         <van-tag plain wx:if="{{ joinGroupItem.role==='admin' }}" type="success">管理员</van-tag>

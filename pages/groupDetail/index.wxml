@@ -5,7 +5,7 @@
   <!-- 页面内容 -->
   <view class="group_detail_container_header">
     <van-image width="300rpx" height="300rpx" src="{{ '/static/avatar/defaultAvatarGroup.png' }}" radius="20rpx" />
-    <text class="group_detail_container_header_title"> {{ groupInfos.name }}</text>
+    <text class="group_detail_container_header_title text-ellipsis"> {{ groupInfos.name }}</text>
     <view class="group_detail_content_id_box">
       <text class="group_detail_content_id_text">ID：{{ groupId }}</text>
       <image class="group_detail_content_copy_icon" src="/static/mine/copy_icon.png"></image>
@@ -25,7 +25,7 @@
   </view>
   <view class="group_detail_container_body">
     <van-cell title="群成员" is-link value="{{ groupInfos.affiliations_count }}" bind:tap="entryGroupMemberListPage" />
-    <van-cell title="群名称" data-edit-groupinfos-type="groupName" is-link value="{{groupInfos.name}}" bind:tap="entryGroupEditGroupInfosPage" />
+    <van-cell class="text-ellipsis" title="群名称" data-edit-groupinfos-type="groupName" is-link value="{{groupInfos.name}}" bind:tap="entryGroupEditGroupInfosPage" />
     <van-cell title="群描述"  data-edit-groupinfos-type="groupDesc" is-link label="{{ groupInfos.description }}" bind:tap="entryGroupEditGroupInfosPage" />
     <van-cell wx:if="{{groupRole === 'owner'}}" clickable>
       <view slot="title">

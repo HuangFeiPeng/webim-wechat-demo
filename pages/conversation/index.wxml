@@ -20,13 +20,14 @@
       <van-icon wx:if="{{ conversationItem.conversationType==='singleChat' }}" slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="{{ conversationItem.avatarurl?conversationItem.avatarurl: '/static/avatar/defaultAvatarSingle.png' }}" info="{{ conversationItem.unReadCount?conversationItem.unReadCount : '' }}" />
       <van-icon wx:if="{{ conversationItem.conversationType==='groupChat' }}" slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="/static/avatar/defaultAvatarGroup.png" info="{{ conversationItem.unReadCount?conversationItem.unReadCount : '' }}" />
       <view slot="title">
-        <view wx:if="{{ conversationItem.conversationType === 'singleChat' }}" class="van-cell-text">{{ conversationItem.nickname || conversationItem.conversationId}}</view>
-        <view wx:if="{{ conversationItem.conversationType === 'groupChat' }}" class="van-cell-text">{{ conversationItem.name || conversationItem.conversationId}}</view>
+        <view wx:if="{{ conversationItem.conversationType === 'singleChat' }}" class="text-ellipsis">{{ conversationItem.nickname || conversationItem.conversationId}}</view>
+        <view wx:if="{{ conversationItem.conversationType === 'groupChat' }}" class="text-ellipsis">{{ conversationItem.name || conversationItem.conversationId}}</view>
         <view class="text-ellipsis" wx:if="{{ conversationItem.lastMessage.type==='txt' }}">{{ conversationItem.lastMessage.msg }}</view>
         <view wx:if="{{ conversationItem.lastMessage.type==='img' }}">[图片]</view>
         <view wx:if="{{ conversationItem.lastMessage.type==='video' }}">[视频]</view>
         <view wx:if="{{ conversationItem.lastMessage.type==='audio' }}">[语音]</view>
         <view wx:if="{{ conversationItem.lastMessage.type==='loc' }}">[位置]</view>
+        <view wx:if="{{ conversationItem.lastMessage.type==='custom' }}">[自定义消息]</view>
       </view>
       <view slot="right-icon">
         {{ conversationItem.lastMessage.time }}

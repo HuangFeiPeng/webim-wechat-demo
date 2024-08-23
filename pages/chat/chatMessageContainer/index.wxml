@@ -1,6 +1,26 @@
 <!--pages/chat/chatMessage/index.wxml-->
 <scroll-view class="scroll_view" scroll-y="true" upper-threshold="100" bindscrolltoupper="onMessageScrolltoupper" scroll-top="{{scrollHeight}}">
-  <view class="message_item_container" wx:for="{{ messageList }}" wx:key="id">
-    {{item.msg}}
+  <view class="message_item_container {{ item.from === loginUserId ? 'message-bubble-right' : 'message-bubble-left'}}" wx:for="{{ messageList }}" wx:key="id">
+    <van-image wx:if="{{ item.from === loginUserId }}" width="40" height="40" radius="10rpx" src="{{ loginUserInfosData.avatarurl || '/static/avatar/defaultAvatarSingle.png' }}" />
+    <van-image wx:if="{{ item.from !== loginUserId }}" width="40" height="40" radius="10rpx" src="{{ conversationParams.avatarurl || '/static/avatar/defaultAvatarSingle.png' }}" />
+    <view class="message_item_content {{ item.from === loginUserId ? 'message_item_content_right' : 'message_item_content_left'}}">
+      <!-- 普通文本 -->
+      <text wx:if="{{ item.type === 'txt' }}"> {{item.msg}} </text>
+      <!-- 图片消息 -->
+      <van-image wx:if="{{ item.type === 'img' }}" width="{{ item.width/2+'rpx' || 100}}" height="{{item.height/2+'rpx' || 100}}" src="{{ item.thumb || item.url}}" bind:click="onPreviewImage" data-image-url="{{ item.url }}" />
+      <!-- 视频消息 -->
+      <view class="video_message" wx:if="{{ item.type === 'video' }}">
+        <van-image width="150" height="100" src="{{ item.thumb}}" />
+        <image class="video_message_play_icon" src="/static/message/triangle_in_circle.png" mode="aspectFill" bind:tap="onPreviewVideo" data-video-url="{{ item.url }}" data-video-poster-url="{{ item.thumb }}" />
+      </view>
+      <!-- 语音片段 -->
+      <view wx:if="{{ item.type === 'audio' }}" class="audio_message {{currentPlayingId === item.id ? 'playing' : ''}}" data-id="{{item.id}}" data-url="{{item.url}}" bind:tap="playAudio">
+        {{item.length+'″'}}
+        <image class="audio_message_play_icon" src="{{item.from === loginUserId ? '/static/message/wave3_left.png' : '/static/message/wave3_right.png'}}" />
+      </view>
+      <view wx:if="{{ item.type === 'custom' }}">[ 自定义消息 ]</view>
+      <view wx:if="{{ item.type === 'file' }}">暂不支持文件下载预览</view>
+      <view wx:if="{{ item.type === 'loc' }}">暂不支持位置消息展示</view>
+    </view>
   </view>
 </scroll-view>
