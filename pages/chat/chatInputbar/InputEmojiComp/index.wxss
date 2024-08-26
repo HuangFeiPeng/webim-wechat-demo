@@ -17,5 +17,7 @@
   display: inline-block;
   width: 60rpx;
   height: 60rpx;
-
+  box-sizing: border-box;
+  padding: 10rpx;
+  margin: 5rpx;
 }

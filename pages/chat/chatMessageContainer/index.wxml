@@ -7,7 +7,7 @@
       <!-- 普通文本 -->
       <text wx:if="{{ item.type === 'txt' }}"> {{item.msg}} </text>
       <!-- 图片消息 -->
-      <van-image wx:if="{{ item.type === 'img' }}" width="{{ item.width/2+'rpx' || 100}}" height="{{item.height/2+'rpx' || 100}}" src="{{ item.thumb || item.url}}" bind:click="onPreviewImage" data-image-url="{{ item.url }}" />
+      <van-image wx:if="{{ item.type === 'img' }}" width="{{ item.width > 0  && item.width < 800 ? item.width/2+'rpx' : 100}}" height="{{item.height > 0 && item.height < 500 ? item.height / 2+'rpx' : 100}}" src="{{ item.thumb || item.url}}" bind:click="onPreviewImage" data-image-url="{{ item.url }}" />
       <!-- 视频消息 -->
       <view class="video_message" wx:if="{{ item.type === 'video' }}">
         <van-image width="150" height="100" src="{{ item.thumb}}" />

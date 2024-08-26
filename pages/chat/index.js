@@ -45,7 +45,7 @@ Page({
     })
     this.store = createStoreBindings(this, {
       store,
-      fields: ['chatingConversationId','loginUserInfosData'],
+      fields: ['chatingConversationId', 'loginUserInfosData'],
       actions: ['setChatingConversationId'],
     });
     this.mountEMPageListenner()
@@ -128,8 +128,19 @@ Page({
       },
     })
   },
-  updateMessageList(message) {
-    console.log('更新消息列表', message);
+  //更新当前消息列表，两个触发位置（消息监听、发送方调用发送）
+  updateMessageList(data) {
+    console.log('更新消息列表', data);
+    let message = {}
+    if (data?.detail) {
+      message = {
+        ...data.detail
+      }
+    } else {
+      message = {
+        ...data
+      }
+    }
     this.setData({
       messageList: [...this.data.messageList, message]
     })
