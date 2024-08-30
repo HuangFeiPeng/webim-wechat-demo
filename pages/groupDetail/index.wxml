@@ -6,7 +6,7 @@
   <view class="group_detail_container_header">
     <van-image width="300rpx" height="300rpx" src="{{ '/static/avatar/defaultAvatarGroup.png' }}" radius="20rpx" />
     <text class="group_detail_container_header_title text-ellipsis"> {{ groupInfos.name }}</text>
-    <view class="group_detail_content_id_box">
+    <view class="group_detail_content_id_box" bind:tap="copyGroupId">
       <text class="group_detail_content_id_text">ID：{{ groupId }}</text>
       <image class="group_detail_content_copy_icon" src="/static/mine/copy_icon.png"></image>
     </view>
@@ -16,10 +16,10 @@
           <image src="/static/detail/bubble_fill.png" mode="aspectFill" />
           <text>发消息</text>
         </view>
-        <view class="func_btn_container_view">
+        <!-- <view class="func_btn_container_view">
           <image src="/static/detail/magnifier.png" mode="aspectFill" />
           <text>搜索消息</text>
-        </view>
+        </view> -->
       </view>
     </view>
   </view>

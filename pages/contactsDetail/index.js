@@ -54,6 +54,25 @@ Page({
   onClickLeft() {
     wx.navigateBack()
   },
+  copyUserId(){
+    wx.setClipboardData({
+      data: this.data.userId,
+      success: () => {
+        wx.showToast({
+          title: '复制成功',
+          icon: 'success',
+          duration: 2000
+        });
+      },
+      fail: (err) => {
+        wx.showToast({
+          title: '复制失败',
+          icon: 'none',
+          duration: 2000
+        });
+      }
+    });
+  },
   onChange(event) {
     Dialog.confirm({
         title: '拉黑联系人',

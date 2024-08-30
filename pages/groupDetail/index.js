@@ -36,6 +36,25 @@ Page({
   onClickLeft() {
     wx.navigateBack()
   },
+  copyGroupId(){
+    wx.setClipboardData({
+      data: this.data.groupId,
+      success: () => {
+        wx.showToast({
+          title: '复制成功',
+          icon: 'success',
+          duration: 2000
+        });
+      },
+      fail: (err) => {
+        wx.showToast({
+          title: '复制失败',
+          icon: 'none',
+          duration: 2000
+        });
+      }
+    });
+  },
   async fetchGroupInfosData(groupId) {
     try {
       const res = await getGroupInfosFromServer(groupId)
