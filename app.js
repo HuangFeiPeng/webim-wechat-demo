@@ -53,7 +53,7 @@ App({
       },
       // 当前用户收到透传消息。
       onCmdMessage: (message) => {
-        store.updateConversationLastMessage({...message})
+        // store.updateConversationLastMessage({...message})
       },
       // 当前用户收到语音消息。
       onAudioMessage: (message) => {

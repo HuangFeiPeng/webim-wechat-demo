@@ -2,6 +2,8 @@ import {
   EaseSDK,
   EMClient
 } from '../../../EaseIM/index'
+import { store } from "../../../store/index"
+console.log('store',store.loginUserInfos);
 const app = getApp()
 Component({
 
@@ -82,6 +84,8 @@ Component({
       });
     },
     async sendTextMessage() {
+      console.log(11111);
+      const { avatarurl,nickname } = store.loginUserInfos
       if (this.data.messageContent.trim() === '') {
         wx.showToast({
           title: '内容不可为空',
@@ -98,6 +102,12 @@ Component({
         to: this.data.targetId,
         // 会话类型：单聊、群聊和聊天室分别为 `singleChat`、`groupChat` 和 `chatRoom`，默认为单聊。
         chatType: this.data.chatType,
+        ext:{
+          ease_chat_uikit_user_info: {
+            avatarURL: avatarurl,
+            nickname: nickname
+          }
+        }
       };
       const msg = EaseSDK.message.create(option);
       try {

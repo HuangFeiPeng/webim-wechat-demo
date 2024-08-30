@@ -22,6 +22,7 @@ Page({
     targetId: '',
     conversationParams: {},
     messageList: [],
+    processedMessageCache: {},
     histroyMessageCursor: null,
     loadingHistoryMessage: false,
     noMore: false
@@ -75,11 +76,11 @@ Page({
       // 当前用户收到透传消息。
       onCmdMessage: (message) => {
         //根据消息from to 获取当前消息的会话id
-        const conversationId = getMessageKey(message)
-        if (conversationId !== this.data.targetId) return;
-        this.updateMessageList({
-          ...message
-        })
+        // const conversationId = getMessageKey(message)
+        // if (conversationId !== this.data.targetId) return;
+        // this.updateMessageList({
+        //   ...message
+        // })
       },
       // 当前用户收到语音消息。
       onAudioMessage: (message) => {
@@ -126,6 +127,20 @@ Page({
           ...message
         })
       },
+      //监听撤回消息
+      onRecallMessage: (message) => {
+        console.log('>>>>监听撤回消息', message);
+        //根据消息from to 获取当前消息的会话id
+        const {
+          from,
+          to,
+          mid
+        } = message
+        //from或to与当前对话中id相同则处理撤回逻辑，否则忽略
+        if (from === this.data.targetId || to === this.data.targetId) {
+          this.handleRecallMessage(mid)
+        }
+      }
     })
   },
   //更新当前消息列表，两个触发位置（消息监听、发送方调用发送）
@@ -144,6 +159,7 @@ Page({
     this.setData({
       messageList: [...this.data.messageList, message]
     })
+    this.processGroupMessageList()
     this.callScrollToBottom()
   },
   async getHistoryMessageData() {
@@ -162,13 +178,14 @@ Page({
       })
       console.log('>>>>>漫游获取成功', res);
       if (res?.messages.length > 0) {
-        const histroyMessageList = res.messages.reverse()
+        let histroyMessageList = res.messages.reverse()
         this.setData({
           histroyMessageCursor: res.cursor,
           messageList: [...histroyMessageList, ...this.data.messageList],
           noMore: res.isLast,
           loadingHistoryMessage: false
         })
+        this.processGroupMessageList()
       }
     } catch (error) {
       console.error(error);
@@ -190,31 +207,68 @@ Page({
       this.getHistoryMessageData()
     }
   },
+  processGroupMessageList() {
+    const lastSeenInfo = {};
+    const messageList = this.data.messageList;
+    // 遍历消息列表，更新lastSeenInfo
+    messageList.forEach(message => {
+      lastSeenInfo[message.from] = {
+        avatarurl: message.ext?.ease_chat_uikit_user_info?.avatarURL || '',
+        nickname: message.ext?.ease_chat_uikit_user_info?.nickname || ''
+      };
+    });
+    // 使用lastSeenInfo来更新消息列表中的avatarurl和nickname
+    const updatedMessageList = messageList.map(message => ({
+      ...message,
+      avatarurl: lastSeenInfo[message.from].avatarurl,
+      nickname: lastSeenInfo[message.from].nickname,
+      formattedTimestamp: this.formatTimestamp(message.time)
+    }));
+    console.log('updatedMessageList', updatedMessageList);
+    // 更新页面数据
+    this.setData({
+      messageList: updatedMessageList
+    });
+  },
+  // 转换时间戳为日期时间格式
+  formatTimestamp: function (timestamp) {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const isToday = date.toDateString() === now.toDateString();
+    if (isToday) {
+      // 如果是今天，只显示时间
+      return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    } else {
+      // 如果不是今天，显示完整日期和时间
+      return `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    }
+  },
   callScrollToBottom() {
     const chatMessageContainerComp = this.selectComponent('#chatMessageContainerComp')
     chatMessageContainerComp?.scrollToBottom()
   },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
+  //执行撤回消息
+  handleRecallMessage(data) {
+    console.log('mid', data);
+    let recallId = ""
+    let _index = -1
+    if (data.detail) {
+      recallId = data.detail.mid
+    } else {
+      recallId = data
+    }
+    if (this.data.messageList.length && recallId) {
+      _index = this.data.messageList.findIndex(message => message.id === recallId)
+    }
+    if(_index>-1){
+      let updateMessageList = this.data.messageList
+      updateMessageList[_index].isRecall = true
+      console.log('updateMessageList',updateMessageList);
+      this.setData({
+        messageList:updateMessageList
+      })
+    }
   },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
-  },
-
   /**
    * 生命周期函数--监听页面卸载
    */
@@ -223,26 +277,6 @@ Page({
     this.store.destroyStoreBindings();
   },
 
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
-  },
   //监听聊天页面点击
   onMessagePageTap() {
     console.log('>>>>>>>聊天页面点击');

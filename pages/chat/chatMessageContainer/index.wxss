@@ -20,24 +20,52 @@
   flex-direction: row-reverse;
   color: #fff;
 }
-
+.message_item_content_box{
+  width: 100%;
+  /* background: pink; */
+  display: flex;
+  flex-direction: column;
+}
+.message_item_content_box_left{
+  align-items: flex-start;
+}
+.message_item_content_box_right{
+  align-items: flex-end;
+}
 .message_item_content_right,
 .message_item_content_left {
   max-width: 60%;
-  min-width: 10%;
+  min-width: 15%;
   min-height: 90rpx;
-  border-radius: 10rpx;
   padding: 8rpx 10rpx;
   box-sizing: border-box;
   margin: 0 10rpx;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 .message_item_content_left {
   background-color: #E8F4FD;
+  border-radius: 0 20rpx 20rpx 20rpx;
 }
 
 .message_item_content_right {
   background-color: #459CF8;
+  border-radius: 20rpx 20rpx 0 20rpx;
+}
+
+.message_item_content_nickname {
+  font-size: 26rpx;
+  color: #459CF8;
+  margin:0 10rpx 10rpx 10rpx;
+}
+
+.message_item_content_time {
+  font-size: 26rpx;
+  margin: 10rpx;
+  color: #E3E3E3;
 }
 
 /* 定义闪烁动画 */
@@ -91,4 +119,11 @@
   height: 100rpx;
   transform: translate(-50%, -50%);
   /* z-index: 99; */
+}
+
+.recall_text{
+  font-size: 25rpx;
+  background-color: #FFF;
+  font-weight: 200;
+  color: #000;
 }

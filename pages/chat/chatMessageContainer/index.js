@@ -1,6 +1,10 @@
 import {
   EMClient
 } from '../../../EaseIM/index'
+import emAboutAck from '../../../EaseIM/emApis/emAboutAck'
+const {
+  sendRecallAckMsg
+} = emAboutAck()
 Component({
 
   /**
@@ -25,9 +29,11 @@ Component({
    * 组件的初始数据
    */
   data: {
+    show: false,
     loginUserId: '',
     scrollHeight: 0, // 初始滚动位置
-    currentPlayingId: null // 用于追踪当前正在播放的音频
+    currentPlayingId: null, // 用于追踪当前正在播放的音频
+    selectedMessageItem: {} //长按选中的消息体
     // mockMessageList: new Array(100).fill(1).map((_, i) => `user${i + 1}`)
   },
   lifetimes: {
@@ -56,6 +62,30 @@ Component({
    * 组件的方法列表
    */
   methods: {
+    //长按消息
+    onLongPressMessageItem(event) {
+      console.log('>>>>>长按消息', event);
+      const {
+        dataset
+      } = event.currentTarget
+      const {
+        messageItem
+      } = dataset
+      if (messageItem) {
+        this.setData({
+          selectedMessageItem: messageItem
+        })
+      }
+      this.setData({
+        show: true
+      })
+    },
+    onClose() {
+      this.setData({
+        show: false
+      });
+    },
+    //消息列表滚动置顶。
     onMessageScrolltoupper() {
       console.log('>>>>>列表滚动置顶。。。')
       //滚动置顶加载更多会话。
@@ -68,7 +98,7 @@ Component({
         this.setData({
           scrollHeight: 10000000
         })
-      }, 230)
+      }, 500)
     },
     //获取当前消息列表的所有图片URL
     getAllMessageListImgUrl() {
@@ -119,7 +149,7 @@ Component({
       // })
     },
     //预览视频
-    onPreviewVideo(event){
+    onPreviewVideo(event) {
       console.log(event);
       const {
         currentTarget: {
@@ -167,6 +197,7 @@ Component({
         });
       }
     },
+    //转换语音为MP3
     convertToMp3(inputFilePath) {
       return new Promise((resolve, reject) => {
         wx.downloadFile({
@@ -191,6 +222,64 @@ Component({
         })
       })
 
+    },
+    //撤回消息
+    async actionRecallMessage() {
+      try {
+        await sendRecallAckMsg(this.data.selectedMessageItem)
+        this.callHandleRecallMessage()
+      } catch (error) {
+        console.log('>>>>>>撤回失败', error);
+        if (error?.type === 504) {
+          wx.showToast({
+            title: '超出可撤回时间',
+          })
+        } else {
+          wx.showToast({
+            title: '撤回失败',
+          })
+        }
+      } finally {
+        this.setData({
+          show: false
+        })
+      }
+    },
+    //更新消息列表撤回状态
+    callHandleRecallMessage() {
+      const {
+        id
+      } = this.data.selectedMessageItem
+      console.log('>>>>调用父组件撤回', id);
+      if (id) {
+        this.triggerEvent('handleRecallMessage', {
+          mid: id
+        })
+      }
+
+    },
+    //复制文本消息
+    copyTextMessageItem() {
+      wx.setClipboardData({
+        data: this.data.selectedMessageItem.msg,
+        success: () => {
+          wx.showToast({
+            title: '复制成功',
+            icon: 'success',
+            duration: 2000
+          });
+        },
+        fail: (err) => {
+          wx.showToast({
+            title: '复制失败',
+            icon: 'none',
+            duration: 2000
+          });
+        }
+      });
+      this.setData({
+        show:false
+      })
     }
   }
 })

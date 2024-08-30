@@ -15,10 +15,10 @@ const emSendReadAck = () => {
   };
   //发送撤回ack
   const sendRecallAckMsg = (recallSourceMsg) => {
-    const { chatType, to, mid } = recallSourceMsg;
+    const { chatType, to, id } = recallSourceMsg;
     let option = {
       // 要撤回消息的消息 ID。
-      mid: mid,
+      mid: id,
       // 消息接收方：单聊为对方用户 ID，群聊和聊天室分别为群组 ID 和聊天室 ID。
       to: to,
       // 会话类型：单聊、群聊和聊天室分别为 `singleChat`、`groupChat` 和 `chatRoom`。
