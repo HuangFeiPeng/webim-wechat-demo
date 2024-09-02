@@ -208,9 +208,10 @@ Page({
     if (conversationtype === 'singleChat') {
       const {
         nickname,
-        avatarurl
+        avatarurl,
+        remark
       } = conversationItem
-      conversationParams.title = nickname ? nickname : ""
+      conversationParams.title = remark || nickname || ""
       conversationParams.avatarurl = avatarurl ? avatarurl : ""
     }
     //unReadCount如果不为0，则执行清零操作。

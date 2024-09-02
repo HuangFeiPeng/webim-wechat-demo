@@ -1,7 +1,13 @@
-import { createStoreBindings } from 'mobx-miniprogram-bindings';
-import { store } from '../../store/index';
+import {
+  createStoreBindings
+} from 'mobx-miniprogram-bindings';
+import {
+  store
+} from '../../store/index';
 import emContacts from '../../EaseIM/emApis/emContacts';
-const { fetchContactsListFromServer } = emContacts();
+const {
+  fetchContactsListFromServer
+} = emContacts();
 const app = getApp();
 Page({
   /**
@@ -20,14 +26,20 @@ Page({
   onLoad(options) {
     this.store = createStoreBindings(this, {
       store,
-      fields: ['contactsList', 'contactsUserInfos', 'enrichedContactsList','notificationsList','loginUserInfosData'],
-      actions: ['initContactsListFromServer'],
+      fields: [
+        'contactsList',
+        'contactsUserInfos',
+        'enrichedContactsList',
+        'notificationsList',
+        'loginUserInfosData',
+      ],
+      actions: ['initContactsListFromServer', 'geContactsUserInfos'],
     });
 
     setTimeout(() => {
       if (!this.data.contactsList.length) {
         console.log('<<<<<发起远端联系人请求');
-        this.fetchContactsListData()
+        this.fetchContactsListData();
       }
     }, 500);
   },
@@ -35,6 +47,13 @@ Page({
     try {
       const res = await fetchContactsListFromServer();
       this.initContactsListFromServer(res);
+      console.log('联系人列表获取成功', res);
+      if (res.length > 0) {
+        const userIds = res.map((item) => item.userId);
+        await this.geContactsUserInfos(userIds);
+      }
+
+
     } catch (error) {
       console.log('>>>>联系人请求成功', error);
     }
@@ -61,7 +80,10 @@ Page({
   },
   onActionSearchInputValue() {
     const searchResult = this.data.enrichedContactsList.filter((contacts) => {
-      const { userId, remark } = contacts;
+      const {
+        userId,
+        remark
+      } = contacts;
       const searchValue = this.data.searchContactsValue;
       const matchesId = userId?.includes(searchValue);
       const matchesRemark = remark?.includes(searchValue);
@@ -80,13 +102,30 @@ Page({
     });
   },
   entryContactDetailPage(event) {
-    console.log('entryContactDetailPage',event);
-    const { currentTarget:{dataset} } = event
-    const { avatarurl,remark,userid,nickname } = dataset
-    console.log(' avatarurl,remark,userid', avatarurl,remark,userid,nickname);
+    console.log('entryContactDetailPage', event);
+    const {
+      currentTarget: {
+        dataset
+      },
+    } = event;
+    const {
+      avatarurl,
+      remark,
+      userid,
+      nickname
+    } = dataset;
+    console.log(
+      ' avatarurl,remark,userid',
+      avatarurl,
+      remark,
+      userid,
+      nickname
+    );
 
     wx.navigateTo({
-      url: `/pages/contactsDetail/index?avatarurl=${avatarurl || ''}&remark=${remark || ''}&userId=${userid || ''}&nickname=${nickname || ''}`,
+      url: `/pages/contactsDetail/index?avatarurl=${avatarurl || ''}&remark=${
+        remark || ''
+      }&userId=${userid || ''}&nickname=${nickname || ''}`,
     });
   },
   /**

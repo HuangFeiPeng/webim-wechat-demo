@@ -17,12 +17,12 @@
   <van-empty wx:if="{{ !enrichedConversationList.length }}" description="暂无会话" />
   <scroll-view wx:if="{{ enrichedConversationList.length }}" class="scroll-content" scroll-y="true" bindscrolltolower="onConversationScrolltolower">
     <van-cell wx:for="{{  searchStatus? searchSourceData: enrichedConversationList}}" wx:for-item="conversationItem" wx:key="conversationId" inset="true" clickable="true" bind:longpress="onCallOpenConversationHandlerActionSheet" data-conversationid="{{conversationItem.conversationId}}" data-conversationtype="{{conversationItem.conversationType}}" data-conversation-item="{{ conversationItem }}" bind:tap="onEntryChatPage">
-    <!-- 会话头像 -->
+      <!-- 会话头像 -->
       <van-icon wx:if="{{ conversationItem.conversationType==='singleChat' }}" slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="{{ conversationItem.avatarurl?conversationItem.avatarurl: '/static/avatar/defaultAvatarSingle.png' }}" info="{{ conversationItem.unReadCount?conversationItem.unReadCount : '' }}" />
       <van-icon wx:if="{{ conversationItem.conversationType==='groupChat' }}" slot="icon" size="100rpx" custom-style="margin-right:20rpx;" name="/static/avatar/defaultAvatarGroup.png" info="{{ conversationItem.unReadCount?conversationItem.unReadCount : '' }}" />
       <!-- 会话标题以及预览 -->
       <view slot="title">
-        <view wx:if="{{ conversationItem.conversationType === 'singleChat' }}" class="text-ellipsis">{{ conversationItem.nickname || conversationItem.conversationId}}</view>
+        <view wx:if="{{ conversationItem.conversationType === 'singleChat' }}" class="text-ellipsis">{{ conversationItem.remark || conversationItem.nickname || conversationItem.conversationId}}</view>
         <view wx:if="{{ conversationItem.conversationType === 'groupChat' }}" class="text-ellipsis">{{ conversationItem.name || conversationItem.conversationId}}</view>
         <view class="text-ellipsis" wx:if="{{ conversationItem.lastMessage.type==='txt' }}">{{ conversationItem.lastMessage.msg }}</view>
         <view wx:if="{{ conversationItem.lastMessage.type==='img' }}">[图片]</view>

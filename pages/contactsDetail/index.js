@@ -34,7 +34,7 @@ Page({
     this.store = createStoreBindings(this, {
       store,
       fields: ['blackList'],
-      actions: ['initBlackListFromServer','deleteContactsListFromStore']
+      actions: ['initBlackListFromServer', 'deleteContactsListFromStore']
     });
     console.log('load contact detail', options);
     const {
@@ -54,7 +54,7 @@ Page({
   onClickLeft() {
     wx.navigateBack()
   },
-  copyUserId(){
+  copyUserId() {
     wx.setClipboardData({
       data: this.data.userId,
       success: () => {
@@ -150,7 +150,7 @@ Page({
       });
   },
   async handleDeleteContacts() {
-    if(!this.data.userId) return console.log('>>>>添加好友userId为空');
+    if (!this.data.userId) return console.log('>>>>添加好友userId为空');
     try {
       await removeContactFromServer(this.data.userId)
       this.deleteContactsListFromStore(this.data.userId)
@@ -163,13 +163,18 @@ Page({
     }
   },
   onEntryChatPage() {
-    const { userId,avatarurl,nickname } = this.data
-    console.log('userId,avatarurl,nickname',userId,avatarurl,nickname);
+    const {
+      userId,
+      avatarurl,
+      nickname,
+      remark
+    } = this.data
+    console.log('userId,avatarurl,nickname', userId, avatarurl, nickname);
     const conversationParams = {
       title: '',
       avatarurl: ''
     }
-    conversationParams.title = nickname ? nickname : ""
+    conversationParams.title = remark || nickname || ""
     conversationParams.avatarurl = avatarurl ? avatarurl : ""
     wx.navigateTo({
       url: `/pages/chat/index?conversationId=${userId}&conversationType=singleChat&conversationParams=${JSON.stringify(conversationParams)}`,

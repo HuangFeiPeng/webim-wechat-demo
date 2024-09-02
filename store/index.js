@@ -205,17 +205,31 @@ export const store = observable({
   //获取用户属性
   geContactsUserInfos: action(function (userIds) {
     if (userIds.length) {
+      // 截取批量获取用户属性一次做多传入100个userId，因此需要进行截取。
+      const chunkArray = (array, chunkSize) => {
+        const results = [];
+        for (let i = 0; i < array.length; i += chunkSize) {
+          results.push(array.slice(i, i + chunkSize));
+        }
+        return results;
+      };
+
+      const userIdChunks = chunkArray(userIds, 100);
+      const fetchPromises = userIdChunks.map(chunk => fetchOtherInfoFromServer(chunk));
       return new Promise((resolve, reject) => {
-        fetchOtherInfoFromServer(userIds).then(res => {
-          if (Object.keys(res).length) {
-            Object.keys(res).forEach(userId => {
-              this.contactsUserInfos.set(userId, res[userId])
-            })
-          }
-          resolve(res);
-        }).catch(error =>
-          reject(error))
-      })
+        Promise.all(fetchPromises).then(results => {
+          const allResults = results.reduce((acc, curr) => {
+            return {
+              ...acc,
+              ...curr
+            }; // Merge all results into a single object
+          }, {});
+          Object.keys(allResults).forEach(userId => {
+            this.contactsUserInfos.set(userId, allResults[userId]);
+          });
+          resolve(allResults);
+        }).catch(error => reject(error));
+      });
     }
   }),
   /* 黑名单 */
@@ -274,11 +288,17 @@ export const store = observable({
   get enrichedConversationList() {
     return this.conversationList.map(conversation => {
       if (conversation.conversationType === 'singleChat') {
+        const contactsItem = this.contactsList.find(contant => contant.userId === conversation.conversationId) || {}
+        console.log('contactsItem', contactsItem);
         const userInfo = this.contactsUserInfos.get(conversation.conversationId);
         if (userInfo) {
           return toJS({
+            ...contactsItem,  // 如果 contactsItem 存在，它会覆盖 conversation 中相同的字段
             ...conversation,
-            ...userInfo,
+            ...(userInfo || {}),  // 如果 userInfo 存在，它也会覆盖之前的字段
+            // ...contactsItem,
+            // ...conversation,
+            // ...userInfo,
           });
         } else {
           return toJS(conversation); // 转换为普通对象
