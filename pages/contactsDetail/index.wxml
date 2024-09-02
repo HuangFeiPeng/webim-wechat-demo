@@ -12,7 +12,7 @@
     </view>
     <view class="contacts_detail_container_header_func_box">
       <view class="func_btn_container">
-        <view class="func_btn_container_view">
+        <view class="func_btn_container_view" bind:tap="onEntryChatPage">
           <image src="/static/detail/bubble_fill.png" mode="aspectFill" />
           <text>发消息</text>
         </view>

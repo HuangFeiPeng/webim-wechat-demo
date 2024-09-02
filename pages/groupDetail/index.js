@@ -72,6 +72,17 @@ Page({
       })
     }
   },
+  onEntryChatPage() {
+    const { groupId,groupInfos } = this.data
+    const conversationParams = {
+      title: '',
+      avatarurl: ''
+    }
+    conversationParams.title = groupInfos.name || groupId
+    wx.navigateTo({
+      url: `/pages/chat/index?conversationId=${groupId}&conversationType=groupChat&conversationParams=${JSON.stringify(conversationParams)}`,
+    });
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */

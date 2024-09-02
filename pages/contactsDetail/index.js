@@ -162,6 +162,19 @@ Page({
       })
     }
   },
+  onEntryChatPage() {
+    const { userId,avatarurl,nickname } = this.data
+    console.log('userId,avatarurl,nickname',userId,avatarurl,nickname);
+    const conversationParams = {
+      title: '',
+      avatarurl: ''
+    }
+    conversationParams.title = nickname ? nickname : ""
+    conversationParams.avatarurl = avatarurl ? avatarurl : ""
+    wx.navigateTo({
+      url: `/pages/chat/index?conversationId=${userId}&conversationType=singleChat&conversationParams=${JSON.stringify(conversationParams)}`,
+    });
+  },
   /**
    * 生命周期函数--监听页面初次渲染完成
    */
