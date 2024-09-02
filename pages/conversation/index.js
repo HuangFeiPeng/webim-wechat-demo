@@ -146,10 +146,9 @@ Page({
   },
   /* Search */
   onSearchFocus() {
-    console.log('>>>>>搜索框聚焦');
     this.setData({
       searchStatus: true,
-      searchSourceData: this.data.conversationList
+      searchSourceData: this.data.enrichedConversationList
     })
   },
   onSearchBlur() {
