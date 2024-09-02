@@ -105,7 +105,7 @@ export const store = observable({
       // 如果会话存在，更新 lastMessage 并将其移动到数组最前面
       runInAction(() => {
         conversation = this.conversationList[conversationIndex];
-        if(this.chatingConversationId !== conversation.conversationId){
+        if (this.chatingConversationId !== conversation.conversationId) {
           conversation.unReadCount = conversation.unReadCount + 1
         }
         conversation.lastMessage = {
@@ -126,7 +126,7 @@ export const store = observable({
             ...message,
             time: formaterDate('MM/DD/HH:mm', message.time)
           },
-          unReadCount: 1
+          unReadCount: message.from !== EMClient.user ? 1 : 0
         });
         this.conversationList.unshift(conversation);
         this.conversationList = [...this.conversationList]
