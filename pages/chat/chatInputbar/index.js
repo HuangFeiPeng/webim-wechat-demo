@@ -1,32 +1,28 @@
-import {
-  EaseSDK,
-  EMClient
-} from '../../../EaseIM/index'
-import { store } from "../../../store/index"
-console.log('store',store.loginUserInfos);
-const app = getApp()
+import { EaseSDK, EMClient } from '../../../EaseIM/index';
+import { store } from '../../../store/index';
+console.log('store', store.loginUserInfos);
+const app = getApp();
 Component({
-
   /**
    * 组件的属性列表
    */
   properties: {
     chatType: {
       type: String,
-      value: ''
+      value: '',
     },
     targetId: {
       type: String,
-      value: ''
+      value: '',
     },
   },
   /**
    * 组件的初始数据
    */
   data: {
-    messageContent: "",
+    messageContent: '',
     cursorPosition: 0,
-    sageAreaBottomHeight: app.globalData.safeAreaBottomHeight
+    sageAreaBottomHeight: app.globalData.safeAreaBottomHeight,
   },
 
   /**
@@ -34,67 +30,65 @@ Component({
    */
   methods: {
     onOpenRecordAudioPopup() {
-      this.onCloseEmojiPickerContainer()
-      this.selectComponent('#inputAudioComp').showPopup()
+      this.onCloseEmojiPickerContainer();
+      this.selectComponent('#inputAudioComp').showPopup();
     },
     onHandleEomjiPickerContainer() {
-      this.selectComponent('#inputEmojiComp').handleShowEmojiContainer()
+      this.selectComponent('#inputEmojiComp').handleShowEmojiContainer();
     },
     onCloseEmojiPickerContainer() {
-      const isShowEomjiContainerStatus = this.selectComponent('#inputEmojiComp').data.showEomjiContainer
+      const isShowEomjiContainerStatus =
+        this.selectComponent('#inputEmojiComp').data.showEomjiContainer;
       if (!isShowEomjiContainerStatus) return;
-      this.onHandleEomjiPickerContainer()
+      this.onHandleEomjiPickerContainer();
     },
     onOpenMoreComponent() {
-      this.onCloseEmojiPickerContainer()
-      this.selectComponent('#inputMoreComp').showPopup()
+      this.onCloseEmojiPickerContainer();
+      this.selectComponent('#inputMoreComp').showPopup();
     },
     handleInput(e) {
       this.setData({
-        cursorPosition: e.detail.cursor
+        cursorPosition: e.detail.cursor,
       });
     },
     handleFocus(e) {
       this.setData({
-        cursorPosition: e.detail.cursor
+        cursorPosition: e.detail.cursor,
       });
     },
     handleBlur(e) {
       this.setData({
-        cursorPosition: e.detail.cursor
+        cursorPosition: e.detail.cursor,
       });
     },
     insertAtCursor(event) {
-      const {
-        messageContent,
-        cursorPosition
-      } = this.data;
+      const { messageContent, cursorPosition } = this.data;
       console.log('event', event);
-      const {
-        detail
-      } = event
+      const { detail } = event;
       let newText = '';
-      detail && (newText = detail)
+      detail && (newText = detail);
       // 分割当前内容，将新内容插入光标位置
-      const updatedContent = messageContent.slice(0, cursorPosition) + newText + messageContent.slice(cursorPosition);
+      const updatedContent =
+        messageContent.slice(0, cursorPosition) +
+        newText +
+        messageContent.slice(cursorPosition);
       // 更新 textarea 的内容和光标位置
       this.setData({
         messageContent: updatedContent,
-        cursorPosition: cursorPosition + newText.length
+        cursorPosition: cursorPosition + newText.length,
       });
     },
     async sendTextMessage() {
-      console.log(11111);
-      const { avatarurl,nickname } = store.loginUserInfos
+      const { avatarurl, nickname } = store.loginUserInfos;
       if (this.data.messageContent.trim() === '') {
         wx.showToast({
           title: '内容不可为空',
-        })
+        });
         return;
       }
       let option = {
         // 消息类型。
-        type: "txt",
+        type: 'txt',
         // 消息内容。
         msg: this.data.messageContent,
         from: EMClient.user,
@@ -102,46 +96,44 @@ Component({
         to: this.data.targetId,
         // 会话类型：单聊、群聊和聊天室分别为 `singleChat`、`groupChat` 和 `chatRoom`，默认为单聊。
         chatType: this.data.chatType,
-        ext:{
+        ext: {
           ease_chat_uikit_user_info: {
             avatarURL: avatarurl,
-            nickname: nickname
-          }
-        }
+            nickname: nickname,
+          },
+        },
       };
       const msg = EaseSDK.message.create(option);
       try {
-        const {
-          message
-        } = await EMClient.send(msg)
+        const { message } = await EMClient.send(msg);
         console.log('>>>>>文本发送成功', message);
         // this.triggerEvent('updateMessageList', message)
-        this.callUpdateMessageList(message)
+        this.callUpdateMessageList(message);
         this.setData({
-          messageContent: ''
-        })
+          messageContent: '',
+        });
       } catch (error) {
         console.error(error);
         wx.showToast({
           title: `发送失败${error.type}`,
-        })
+        });
       } finally {
-        this.onCloseEmojiPickerContainer()
+        this.onCloseEmojiPickerContainer();
       }
     },
     callUpdateMessageList(data) {
-      let message = {}
+      let message = {};
       if (data?.detail) {
         message = {
-          ...data.detail
-        }
+          ...data.detail,
+        };
       } else {
         message = {
-          ...data
-        }
+          ...data,
+        };
       }
       console.log('message', message);
-      this.triggerEvent('updateMessageList', message)
-    }
-  }
-})
+      this.triggerEvent('updateMessageList', message);
+    },
+  },
+});

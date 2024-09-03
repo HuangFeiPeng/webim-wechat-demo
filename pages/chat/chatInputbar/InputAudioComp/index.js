@@ -1,32 +1,29 @@
-import {
-  EaseSDK,
-  EMClient
-} from '../../../../EaseIM/index'
+import { EaseSDK, EMClient } from '../../../../EaseIM/index';
+import { store } from '../../../../store/index';
 const RECORD_STATE = {
   NOT_START: 0,
   RECORDING: 1,
   RECORD_END: 2,
-  PLAY_RECORD: 3
-}
+  PLAY_RECORD: 3,
+};
 const RECORD_STATE_TEXT = {
   [RECORD_STATE.NOT_START]: '录音',
   [RECORD_STATE.RECORDING]: '正在录音',
   [RECORD_STATE.RECORD_END]: '播放',
-  [RECORD_STATE.PLAY_RECORD]: '正在播放'
-}
+  [RECORD_STATE.PLAY_RECORD]: '正在播放',
+};
 Component({
-
   /**
    * 组件的属性列表
    */
   properties: {
     chatType: {
       type: String,
-      value: ''
+      value: '',
     },
     targetId: {
       type: String,
-      value: ''
+      value: '',
     },
   },
   lifetimes: {
@@ -39,7 +36,7 @@ Component({
       if (this.innerAudioContext) {
         this.innerAudioContext.destroy();
       }
-    }
+    },
   },
   /**
    * 组件的初始数据
@@ -61,14 +58,14 @@ Component({
     //展开popup
     showPopup() {
       this.setData({
-        show: true
+        show: true,
       });
-      this.requestRecordAuth()
+      this.requestRecordAuth();
     },
     //关闭popup
     onClose() {
       this.setData({
-        show: false
+        show: false,
       });
     },
     //处理开始录音
@@ -85,8 +82,8 @@ Component({
       recorderManager.start(options);
       this.setData({
         recordState: RECORD_STATE.RECORDING,
-        recordStateText: RECORD_STATE_TEXT[RECORD_STATE.RECORDING]
-      })
+        recordStateText: RECORD_STATE_TEXT[RECORD_STATE.RECORDING],
+      });
       let seconds = 0;
       // 启动计时器，每秒更新录音时长
       this.timer = setInterval(() => {
@@ -111,7 +108,7 @@ Component({
         clearInterval(this.timer); // 停止计时器
         this.setData({
           tempFilePath: res.tempFilePath,
-          duration: res.duration
+          duration: res.duration,
         });
       });
       recorderManager.onError((err) => {
@@ -126,15 +123,13 @@ Component({
     handleRecordAudioEnd() {
       this.setData({
         recordState: RECORD_STATE.RECORD_END,
-        recordStateText: RECORD_STATE_TEXT[RECORD_STATE.RECORD_END]
-      })
-      this.stopRecording()
+        recordStateText: RECORD_STATE_TEXT[RECORD_STATE.RECORD_END],
+      });
+      this.stopRecording();
     },
     //处理播放录音
     handleRecordAudioPlay() {
-      const {
-        tempFilePath
-      } = this.data;
+      const { tempFilePath } = this.data;
 
       if (!tempFilePath) {
         wx.showToast({
@@ -151,22 +146,22 @@ Component({
         console.log('录音播放开始');
         this.setData({
           recordState: RECORD_STATE.PLAY_RECORD,
-          recordStateText: RECORD_STATE_TEXT[RECORD_STATE.PLAY_RECORD]
-        })
+          recordStateText: RECORD_STATE_TEXT[RECORD_STATE.PLAY_RECORD],
+        });
       });
 
       this.innerAudioContext.onEnded(() => {
         console.log('录音播放结束');
         this.setData({
           recordState: RECORD_STATE.RECORD_END,
-          recordStateText: RECORD_STATE_TEXT[RECORD_STATE.RECORD_END]
-        })
+          recordStateText: RECORD_STATE_TEXT[RECORD_STATE.RECORD_END],
+        });
       });
       this.innerAudioContext.onError((err) => {
         console.error('播放错误', err);
         wx.showToast({
           title: '播放错误',
-        })
+        });
       });
     },
     //处理取消录音
@@ -176,13 +171,13 @@ Component({
         recordStateText: RECORD_STATE_TEXT[RECORD_STATE.NOT_START],
         tempFilePath: '',
         duration: 0,
-        recordingTime: '0s'
-      })
-      this.stopRecording()
+        recordingTime: '0s',
+      });
+      this.stopRecording();
     },
     //处理发送录音
     handleSendRecordAudio() {
-      this.updateRecordAudioData()
+      this.updateRecordAudioData();
     },
     // 停止录音
     stopRecording() {
@@ -218,28 +213,26 @@ Component({
                           } else {
                             console.log('录音权限开启失败');
                           }
-                        }
+                        },
                       });
                     }
-                  }
+                  },
                 });
-              }
+              },
             });
           } else {
             // 用户已经授权
             console.log('录音权限已授权');
             // 可以开始录音了
           }
-        }
+        },
       });
     },
     //上传录音文件
     updateRecordAudioData() {
-      const url = `${EMClient.apiUrl}/${EMClient.orgName}/${EMClient.appName}/chatfiles`
-      const accessToken = EMClient.token
-      const {
-        tempFilePath
-      } = this.data;
+      const url = `${EMClient.apiUrl}/${EMClient.orgName}/${EMClient.appName}/chatfiles`;
+      const accessToken = EMClient.token;
+      const { tempFilePath } = this.data;
       if (!tempFilePath) {
         wx.showToast({
           title: '请先录制音频',
@@ -252,19 +245,17 @@ Component({
         filePath: tempFilePath,
         name: 'file',
         header: {
-          Authorization: "Bearer " + accessToken
+          Authorization: 'Bearer ' + accessToken,
         },
         success: (res) => {
           console.log('上传成功', res);
-          const {
-            data
-          } = res
-          this.sendAudioMessage(JSON.parse(data))
+          const { data } = res;
+          this.sendAudioMessage(JSON.parse(data));
         },
         fail: (err) => {
           console.error('上传失败', err);
           this.setData({
-            recordingStatus: '音频上传失败'
+            recordingStatus: '音频上传失败',
           });
         },
       });
@@ -272,18 +263,17 @@ Component({
     //发送音频消息
     async sendAudioMessage(uploadFileData) {
       console.log('>>>>>执行发送', uploadFileData);
-      const {
-        duration
-      } = this.data
+      const { avatarurl, nickname } = store.loginUserInfos;
+      const { duration } = this.data;
       var option = {
-        type: "audio",
+        type: 'audio',
         filename: Date.now() + '.mp3',
         // 消息接收方：单聊为对端用户 ID，群聊和聊天室分别为群组 ID 和聊天室 ID。
         body: {
           //文件 URL。
-          url: uploadFileData.uri + "/" + uploadFileData.entities[0].uuid,
+          url: uploadFileData.uri + '/' + uploadFileData.entities[0].uuid,
           //文件类型。
-          type: "audio",
+          type: 'audio',
           //文件名。
           filename: Date.now() + '.mp3',
           // 音频文件时长，单位为秒。
@@ -292,24 +282,27 @@ Component({
         from: EMClient.user,
         chatType: this.data.chatType,
         to: this.data.targetId,
+        ext: {
+          ease_chat_uikit_user_info: {
+            avatarURL: avatarurl,
+            nickname: nickname,
+          },
+        },
       };
       try {
         let msg = EaseSDK.message.create(option);
         // 调用 `send` 方法发送该语音消息。
-        const {
-          message
-        } = await EMClient
-          .send(msg)
-          console.log('>>>>>>发送语音消息成功',message);
-          this.handleDeleteRecordAudioData()
-          this.onClose()
-          this.triggerEvent('callUpdateMessageList', message)
+        const { message } = await EMClient.send(msg);
+        console.log('>>>>>>发送语音消息成功', message);
+        this.handleDeleteRecordAudioData();
+        this.onClose();
+        this.triggerEvent('callUpdateMessageList', message);
       } catch (error) {
         console.error(error);
         wx.showToast({
           title: `发送失败${error.type}`,
-        })
+        });
       }
-    }
-  }
-})
+    },
+  },
+});
