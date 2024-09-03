@@ -34,9 +34,23 @@ Page({
     }
   },
   onClickLeft() {
+    const pages = getCurrentPages(); // 获取页面栈
+    const prevPage = pages[pages.length - 2]; // 获取上一页面的实例对象
+    console.log('prevPage', prevPage.data.joinedGroupList);
+    // 如果上一页存在加入的群组列表，且群名不一致修改群组列表中的群组名称。
+    if (prevPage.data.joinedGroupList.length && prevPage.data.joinedGroupList.some(item => item.groupId === this.data.groupId)) {
+      let joinedGroupList = prevPage.data.joinedGroupList
+      const _index = joinedGroupList.findIndex(item => item.groupId === this.data.groupId)
+      if (joinedGroupList[_index].groupName != this.data.groupInfos.name) {
+        joinedGroupList[_index].groupName = this.data.groupInfos.name
+        prevPage.setData({
+          joinedGroupList
+        })
+      }
+    }
     wx.navigateBack()
   },
-  copyGroupId(){
+  copyGroupId() {
     wx.setClipboardData({
       data: this.data.groupId,
       success: () => {
@@ -73,7 +87,10 @@ Page({
     }
   },
   onEntryChatPage() {
-    const { groupId,groupInfos } = this.data
+    const {
+      groupId,
+      groupInfos
+    } = this.data
     const conversationParams = {
       title: '',
       avatarurl: ''
@@ -87,7 +104,7 @@ Page({
    * 生命周期函数--监听页面初次渲染完成
    */
   onReady() {
-  
+
   },
   entryGroupMemberListPage() {
     wx.navigateTo({
@@ -173,9 +190,9 @@ Page({
         title: '已离开群组',
       })
       this.updatePrePageGroupList(this.data.groupId)
-      setTimeout(()=>{
-       wx.navigateBack()
-      },1000)
+      setTimeout(() => {
+        wx.navigateBack()
+      }, 1000)
     } catch (error) {
       wx.showToast({
         title: '离开失败',
@@ -188,9 +205,9 @@ Page({
     console.log('prevPage', prevPage.data.joinedGroupList);
     //此处逻辑为执行了退出或者删除群组后，直接本地更新群组列表页面的数据。
     if (prevPage?.data?.joinedGroupList?.length) {
-      const newJoinedGroupList = prevPage.data.joinedGroupList.filter(groupItem=> groupItem.groupId !== groupId)
+      const newJoinedGroupList = prevPage.data.joinedGroupList.filter(groupItem => groupItem.groupId !== groupId)
       prevPage.setData({
-        joinedGroupList:newJoinedGroupList
+        joinedGroupList: newJoinedGroupList
       })
     }
 

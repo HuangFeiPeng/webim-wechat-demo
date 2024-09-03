@@ -1,3 +1,9 @@
+import {
+  createStoreBindings
+} from 'mobx-miniprogram-bindings';
+import {
+  store
+} from '../../store/index';
 import emGroups from '../../EaseIM/emApis/emGroups'
 const {
   modifyGroupInfo,
@@ -19,6 +25,13 @@ Page({
    */
   onLoad(options) {
     console.log('options', options);
+    this.store = createStoreBindings(this, {
+      store,
+      // fields: ['enrichedConversationList', 'loginUserInfosData'],
+      actions: [
+        'geGroupInfos'
+      ],
+    });
     const {
       groupId,
       editGroupinfosType,
@@ -53,13 +66,14 @@ Page({
     if (!this.data.groupId || !this.data.inputValue) return
     try {
       let params = {}
-      if(this.data.editType === 'groupName'){
+      if (this.data.editType === 'groupName') {
         params.groupName = this.data.inputValue
       }
-      if(this.data.editType === 'groupDesc'){
+      if (this.data.editType === 'groupDesc') {
         params.description = this.data.inputValue
       }
-      await modifyGroupInfo(this.data.groupId,params)
+      await modifyGroupInfo(this.data.groupId, params)
+      await this.geGroupInfos(this.data.groupId)
       this.setData({
         savedGroupInfosValue: this.data.inputValue
       })
@@ -76,7 +90,7 @@ Page({
    * 生命周期函数--监听页面卸载
    */
   onUnload() {
-
+    this.store.destroyStoreBindings();
   },
 
 
