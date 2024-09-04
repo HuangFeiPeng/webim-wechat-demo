@@ -16,7 +16,9 @@
     "pages/createGroup/index",
     "pages/notifications/index",
     "pages/profileEdit/profilePrview/index",
-    "pages/profileEdit/nicknameEdit/index"
+    "pages/profileEdit/nicknameEdit/index",
+    "pages/groupMemberList/addGroupMember/index",
+    "pages/groupMemberList/deleteGroupMember/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",
