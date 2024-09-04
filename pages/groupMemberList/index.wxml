@@ -3,7 +3,7 @@
   <van-nav-bar bind:click-left="onClickLeft">
     <view slot="left">
       <van-icon color="#009eff" name="arrow-left" />
-      <text>群成员（{{groupMemberCount}}）</text>
+      <text>群成员</text>
     </view>
   </van-nav-bar>
   <view wx:if="{{ groupRole === 'owner' }}" class="group_member_handler_box">

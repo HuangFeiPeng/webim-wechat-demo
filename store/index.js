@@ -118,6 +118,12 @@ export const store = observable({
       });
     } else {
       // 如果会话不存在，新建会话并移动到数组最前面
+      if(message.chatType === 'singleChat'){
+        this.geContactsUserInfos([conversationId])
+      }
+      if(message.chatType === 'groupChat'){
+        this.geGroupInfos([conversationId])
+      }
       runInAction(() => {
         conversation = observable({
           conversationId: conversationId,
@@ -213,7 +219,6 @@ export const store = observable({
         }
         return results;
       };
-
       const userIdChunks = chunkArray(userIds, 100);
       const fetchPromises = userIdChunks.map(chunk => fetchOtherInfoFromServer(chunk));
       return new Promise((resolve, reject) => {

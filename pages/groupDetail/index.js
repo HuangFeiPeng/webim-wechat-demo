@@ -29,8 +29,10 @@ Page({
       groupId,
       groupRole
     })
-    if (groupId) {
-      this.fetchGroupInfosData(groupId)
+  },
+  onShow(){
+    if (this.data.groupId) {
+      this.fetchGroupInfosData(this.data.groupId)
     }
   },
   onClickLeft() {

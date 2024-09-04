@@ -5,6 +5,7 @@ import {
   store
 } from '../../store/index';
 import emGroups from '../../EaseIM/emApis/emGroups'
+import { EMClient } from '../../EaseIM/index';
 const {
   createNewGroup
 } = emGroups()
@@ -23,7 +24,7 @@ Page({
   onLoad(options) {
     this.store = createStoreBindings(this, {
       store,
-      fields: ['contactsList', 'contactsUserInfos', 'enrichedContactsList'],
+      fields: ['loginUserInfos','contactsList', 'contactsUserInfos', 'enrichedContactsList'],
     });
   },
   onClickLeft() {
@@ -73,63 +74,20 @@ Page({
   },
   buildGroupName(memberList){
     let result = '';
-    if (memberList.length >= 2) {
-      // 取前3个元素
-      const topValues = memberList.slice(0, 3);
-      // 以“，”拼接成字符串
-      result = `群聊（${topValues.join(', ')}）`;
+    // if (memberList.length >= 2) {
+    //   // 取前3个元素
+    //   const topValues = memberList.slice(0, 3);
+    //   // 以“，”拼接成字符串
+    //   result = `群聊（${topValues.join(', ')}）`;
+    // }else{
+    //   result = '群聊'
+    // }
+    if(this.data.loginUserInfos.nickname){
+      result = `【${this.data.loginUserInfos.nickname}】的群聊`
     }else{
-      result = '群聊'
+      result = `【${EMClient.user}】的群聊`
     }
     console.log('result',result);
     return result
   },
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-    this.store.destroyStoreBindings();
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
-  }
 })
