@@ -1,13 +1,6 @@
-import {
-  createStoreBindings
-} from 'mobx-miniprogram-bindings';
-import {
-  store
-} from '../../store/index';
+import { createStoreBindings } from 'mobx-miniprogram-bindings';
+import { store } from '../../store/index';
 import emContacts from '../../EaseIM/emApis/emContacts';
-const {
-  fetchContactsListFromServer
-} = emContacts();
 const app = getApp();
 Page({
   /**
@@ -33,7 +26,7 @@ Page({
         'notificationsList',
         'loginUserInfosData',
       ],
-      actions: ['initContactsListFromServer', 'geContactsUserInfos'],
+      actions: ['initContactsListFromServer'],
     });
 
     setTimeout(() => {
@@ -45,15 +38,8 @@ Page({
   },
   async fetchContactsListData() {
     try {
-      // const res = await fetchContactsListFromServer();
       this.initContactsListFromServer();
       console.log('联系人列表获取成功');
-      // if (res.length > 0) {
-      //   const userIds = res.map((item) => item.userId);
-      //   await this.geContactsUserInfos(userIds);
-      // }
-
-
     } catch (error) {
       console.log('>>>>联系人请求成功', error);
     }
@@ -80,10 +66,7 @@ Page({
   },
   onActionSearchInputValue() {
     const searchResult = this.data.enrichedContactsList.filter((contacts) => {
-      const {
-        userId,
-        remark
-      } = contacts;
+      const { userId, remark } = contacts;
       const searchValue = this.data.searchContactsValue;
       const matchesId = userId?.includes(searchValue);
       const matchesRemark = remark?.includes(searchValue);
@@ -104,16 +87,9 @@ Page({
   entryContactDetailPage(event) {
     console.log('entryContactDetailPage', event);
     const {
-      currentTarget: {
-        dataset
-      },
+      currentTarget: { dataset },
     } = event;
-    const {
-      avatarurl,
-      remark,
-      userid,
-      nickname
-    } = dataset;
+    const { avatarurl, remark, userid, nickname } = dataset;
     console.log(
       ' avatarurl,remark,userid',
       avatarurl,
