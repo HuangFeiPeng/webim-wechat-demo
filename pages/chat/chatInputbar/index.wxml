@@ -10,7 +10,7 @@
     </view>
     <!-- 文本输入 -->
     <view class="chat_inputbar_container_input_box">
-      <textarea class="chat_inputbar_container_input_textarea" model:value="{{ messageContent }}" cursor="{{10}}" auto-height="{{true}}" confirm-type="send" adjust-keyboard-to="bottom" show-confirm-bar="{{false}}" bindconfirm="sendTextMessage" bindinput="handleInput" bindfocus="handleFocus" bindblur="handleBlur" />
+      <input  model:value="{{ messageContent }}" cursor="{{20}}" auto-height="{{true}}" confirm-type="send" adjust-keyboard-to="bottom" show-confirm-bar="{{false}}" bindconfirm="sendTextMessage" bindinput="handleInput" bindfocus="handleFocus" bindblur="handleBlur" />
     </view>
     <!-- 表情 -->
     <view class="chat_inputbar_container_emoji_box" bind:tap="onHandleEomjiPickerContainer">
