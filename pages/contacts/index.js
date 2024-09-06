@@ -45,13 +45,13 @@ Page({
   },
   async fetchContactsListData() {
     try {
-      const res = await fetchContactsListFromServer();
-      this.initContactsListFromServer(res);
-      console.log('联系人列表获取成功', res);
-      if (res.length > 0) {
-        const userIds = res.map((item) => item.userId);
-        await this.geContactsUserInfos(userIds);
-      }
+      // const res = await fetchContactsListFromServer();
+      this.initContactsListFromServer();
+      console.log('联系人列表获取成功');
+      // if (res.length > 0) {
+      //   const userIds = res.map((item) => item.userId);
+      //   await this.geContactsUserInfos(userIds);
+      // }
 
 
     } catch (error) {

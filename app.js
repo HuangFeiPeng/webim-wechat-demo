@@ -88,13 +88,17 @@ App({
         })
       },
       // 联系人被删除。
-      onContactDeleted: function (msg) {},
+      onContactDeleted: function (msg) {
+        store.initContactsListFromServer()
+      },
       // 新增联系人。
       onContactAdded: function (msg) {},
       // 当前用户发送的好友请求被拒绝。
       onContactRefuse: function (msg) {},
       // 当前用户发送的好友请求被同意。
-      onContactAgreed: function (msg) {},
+      onContactAgreed: function (msg) {
+        store.initContactsListFromServer()
+      },
     })
     /* 群组相关监听 */
     EMClient.addEventHandler("GROUPS", {

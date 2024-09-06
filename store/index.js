@@ -9,6 +9,7 @@ import {
 import formaterDate from '../utils/formaterDate'
 import emUserInfos from '../EaseIM/emApis/emUserInfos'
 import emGroups from '../EaseIM/emApis/emGroups'
+import emContacts from '../EaseIM/emApis/emContacts';
 import {
   EMClient
 } from '../EaseIM/index'
@@ -16,6 +17,9 @@ import getMessageKey from '../utils/setMessageKey'
 const {
   fetchOtherInfoFromServer,
 } = emUserInfos()
+const {
+  fetchContactsListFromServer
+} = emContacts();
 const {
   getGroupInfosFromServer
 } = emGroups()
@@ -118,10 +122,10 @@ export const store = observable({
       });
     } else {
       // 如果会话不存在，新建会话并移动到数组最前面
-      if(message.chatType === 'singleChat'){
+      if (message.chatType === 'singleChat') {
         this.geContactsUserInfos([conversationId])
       }
-      if(message.chatType === 'groupChat'){
+      if (message.chatType === 'groupChat') {
         this.geGroupInfos([conversationId])
       }
       runInAction(() => {
@@ -174,9 +178,18 @@ export const store = observable({
   }),
   /* 联系人相关 */
   //获取全部联系人
-  initContactsListFromServer: action(function (data) {
-    console.log('initContactsListFromServer', data);
-    this.contactsList = [...data]
+  initContactsListFromServer: action(function () {
+    console.log('initContactsListFromServer');
+    fetchContactsListFromServer().then(res => {
+      console.log('>>>>>接口返回成功',res);
+      this.contactsList = [...res]
+      if (res.length > 0) {
+        const userIds = res.map((item) => item.userId);
+        console.log('userIds',userIds);
+        this.geContactsUserInfos(userIds);
+      }
+    })
+
   }),
   //删除本地store中的ContactList
   deleteContactsListFromStore: action(function (userId) {
@@ -298,9 +311,9 @@ export const store = observable({
         const userInfo = this.contactsUserInfos.get(conversation.conversationId);
         if (userInfo) {
           return toJS({
-            ...contactsItem,  // 如果 contactsItem 存在，它会覆盖 conversation 中相同的字段
+            ...contactsItem, // 如果 contactsItem 存在，它会覆盖 conversation 中相同的字段
             ...conversation,
-            ...(userInfo || {}),  // 如果 userInfo 存在，它也会覆盖之前的字段
+            ...(userInfo || {}), // 如果 userInfo 存在，它也会覆盖之前的字段
             // ...contactsItem,
             // ...conversation,
             // ...userInfo,
